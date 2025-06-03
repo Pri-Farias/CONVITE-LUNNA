@@ -97,9 +97,9 @@ body, html {
 }
 
 #brasao-hogwarts {
-    width: 70px; /* Ajustado para ser um pouco menor que antes (era 100px) */
-    max-width: 15%; /* Ajustado */
-    margin-bottom: 10px; 
+    width: 110px; /* Ajustado para ser um pouco menor que antes (era 100px) */
+    max-width: 25%; /* Ajustado */
+    margin-bottom: 15px; 
 }
 
 #texto-convite-container {
