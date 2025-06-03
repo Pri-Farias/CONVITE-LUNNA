@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convite Mágico - Aniversário de Lunna</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=MedievalSharp&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container-magico">
+        <div id="tela-inicial">
+            <img src="assets/carta-fechada-selo.png" alt="Carta de Hogwarts Fechada" id="carta-fechada">
+            <p id="instrucao-abrir">Toque para abrir</p>
+        </div>
+
+        <div id="carta-container" class="escondido">
+            <div id="carta-aberta">
+                <img src="assets/brasao-hogwarts.png" alt="Brasão de Hogwarts" id="brasao-hogwarts">
+                <div id="texto-convite-container">
+                    <p id="texto-convite"></p>
+                </div>
+                 </div>
+            <img src="assets/coruja.png" alt="Coruja" id="coruja-animacao" class="escondido">
+        </div>
+        
+
+        <audio id="musica-fundo" src="assets/musica-magica.mp3" loop></audio>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
