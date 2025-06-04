@@ -8,26 +8,24 @@
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="invitation-container">
-        <!-- Tela Inicial com a Carta Fechada -->
-        <div id="closed-letter-screen" class="screen active">
-            <img src="assets/carta-fechada-selo.png" alt="Carta Fechada" id="closed-letter-image">
-            <p class="tap-to-open">Toque para Revelar</p>
+    <div id="invitation-container">
+
+        <!-- Tela Inicial: Carta Fechada -->
+        <div id="initial-screen" class="screen active">
+            <img src="assets/carta-fechada-selo.png" alt="Carta Fechada" id="closed-letter-img">
+            <p class="instruction-text">Toque para Revelar</p>
         </div>
 
-        <!-- Tela do Pergaminho -->
-        <div id="scroll-screen" class="screen hidden">
-            <div class="scroll-content-wrapper">
-                <h1>🪄 Convite Ultra-Secreto 🪄</h1>
-                <p>Prezado(a) bruxinho(a),</p>
-                <p>Um elfo fofoqueiro contou: no dia <strong>19/06</strong>, a bruxinha poderosa <strong>LUNNA</strong> completa mais um ciclo encantado! ✨🧁</p>
-                <p>Pra celebrar, teremos um bolinho que desaparece, docinhos mágicos e sorrisos brilhando no escuro! Nada de dragões ou aulas de poções — é só um bolinho, mesmo!</p>
-                <p>📅 Data encantada: <strong>19/06 (quarta)</strong></p>
-                <p>⏰ Horário do feitiço: <strong>18h</strong> (sem atraso ou vira sapo!)</p>
-                <p>📍 Local encantado: <strong>No Refúgio Secreto da Lunna</strong></p>
-                <p>Esperamos você pra espalhar magia e dar boas risadas! 🎉</p>
+        <!-- Tela do Convite: Pergaminho -->
+        <div id="scroll-screen" class="screen">
+            <div id="scroll-content-area">
+                <img src="assets/brasao-hogwarts.png" alt="Brasão" id="crest-img">
+                <div id="invite-text-wrapper">
+                    <!-- O texto será inserido aqui pelo JavaScript -->
+                </div>
             </div>
         </div>
+
     </div>
 
     <audio id="background-music" loop>

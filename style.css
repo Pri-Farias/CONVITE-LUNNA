@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
 
 :root {
-    --ink-color: #4a3b31;   /* Cor da tinta, ajuste se necessário sobre seu pergaminho */
-    --text-highlight-color: #5c3a21;
+    --font-medieval: 'MedievalSharp', cursive;
+    --text-color-parchment: #3a2d20; /* Cor escura para boa leitura no pergaminho */
+    --highlight-color: #7a0d05; /* Para detalhes em strong, se houver */
+    --animation-duration: 0.8s;
 }
 
 body, html {
@@ -11,145 +13,160 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    font-family: 'MedievalSharp', cursive;
-    /* Fundo com sua imagem do universo */
+    font-family: var(--font-medieval);
     background: url('assets/fundo-universo.png') no-repeat center center fixed;
     background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--ink-color);
 }
 
-.invitation-container {
+#invitation-container {
     width: 100%;
     height: 100%;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-    perspective: 1200px; /* Para efeitos 3D */
 }
 
 .screen {
-    width: 90vw;
-    max-width: 400px; /* Limite máximo para não ficar gigante em tablets */
-    height: auto;
     position: absolute;
+    width: 90vw; /* Largura relativa à tela */
+    max-width: 450px; /* Limite máximo para não ficar muito grande */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.7s ease-in-out, transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
-
-.screen.hidden {
     opacity: 0;
-    transform: scale(0.7) rotateY(90deg);
-    pointer-events: none;
+    transform: scale(0.8);
+    transition: opacity var(--animation-duration) ease-out, transform var(--animation-duration) ease-out;
+    pointer-events: none; /* Desabilita interação quando não visível */
 }
 
 .screen.active {
     opacity: 1;
-    transform: scale(1) rotateY(0deg);
-    pointer-events: auto;
+    transform: scale(1);
+    pointer-events: auto; /* Habilita interação quando visível */
 }
 
-/* Tela da Carta Fechada */
-#closed-letter-screen {
+/* Tela Inicial */
+#initial-screen {
     cursor: pointer;
-}
-
-#closed-letter-image {
-    width: 70vw; /* Ajuste conforme o tamanho/aspecto da sua imagem */
-    max-width: 280px;
-    height: auto;
-    display: block;
-    margin-bottom: 15px;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-}
-
-.tap-to-open {
-    font-size: clamp(16px, 4vw, 20px); /* Tamanho responsivo */
-    color: #fff0c4; /* Cor clara para contraste com fundo escuro e carta */
-    text-shadow: 0 0 5px #000, 0 0 10px #ffc107; /* Brilho mágico */
     text-align: center;
-    animation: pulseGlow 2.5s infinite ease-in-out;
 }
 
-@keyframes pulseGlow {
-    0%, 100% { opacity: 0.7; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 8px #000, 0 0 15px #ffeb3b; }
+#closed-letter-img {
+    width: 60vw;
+    max-width: 250px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+}
+
+.instruction-text {
+    font-size: clamp(16px, 4vw, 22px);
+    color: #fff0c4;
+    text-shadow: 0 0 8px #000, 0 0 12px #ffc107;
+    animation: pulse-glow 2s infinite alternate;
+}
+
+@keyframes pulse-glow {
+    from {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.05);
+    }
 }
 
 /* Tela do Pergaminho */
 #scroll-screen {
-    /* Usar a imagem do pergaminho como fundo */
+    /* O pergaminho será o fundo deste div */
     background: url('assets/carta-aberta-fundo.png') no-repeat center center;
-    background-size: contain; /* Ou cover, dependendo da imagem e se quer que ela preencha ou caiba */
-    padding: 15% 12%; /* Ajuste o padding para o texto caber dentro da área visual do seu pergaminho */
-                      /* Ex: Se o seu pergaminho tem bordas desenhadas, o texto não deve ir até a borda física do div */
-    box-sizing: border-box;
-    width: 90vw;
-    max-width: 450px; /* Pode ser um pouco maior que a carta fechada */
-    aspect-ratio: 3/4; /* TENTE AJUSTAR ISSO AO ASPECTO DA SUA IMAGEM DE PERGAMINHO */
-                       /* Se sua imagem de pergaminho for 600x800px, a proporção é 3/4 */
-                       /* Se for quadrada, 1/1. Se for paisagem, 4/3. */
-                       /* Isso ajuda a manter a forma da imagem de fundo */
-    height: auto; /* O aspect-ratio vai cuidar disso se width estiver definido */
-    overflow: hidden; /* Se o conteúdo vazar, esconda. */
-    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+    background-size: contain; /* Garante que toda a imagem do pergaminho apareça e escale */
+
+    /*
+       IMPORTANTE: Ajuste o aspect-ratio abaixo para corresponder à proporção da sua imagem de pergaminho.
+       Se sua imagem de pergaminho é mais alta que larga, use algo como 2/3 ou 9/16.
+       Se for mais larga que alta (menos comum para pergaminhos verticais), use 4/3 ou 16/9.
+       Se for quase quadrada, use 1/1 ou valores próximos.
+       Exemplo: se pergaminho.png tem 600px de largura e 900px de altura, aspect-ratio é 600/900 = 2/3.
+    */
+    width: 90vw; /* Mantenha ou ajuste conforme necessário */
+    max-width: 400px; /* Ajuste para não ficar muito largo em telas maiores */
+    aspect-ratio: 2 / 3; /* Exemplo para um pergaminho mais alto que largo. AJUSTE CONFORME SUA IMAGEM! */
+
+    padding: 0; /* O padding será no #scroll-content-area */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
-.scroll-content-wrapper {
+#scroll-content-area {
     width: 100%;
     height: 100%;
-    overflow-y: auto; /* Permite rolagem se o texto for muito grande para o pergaminho */
-    /* Estilo para a barra de rolagem (opcional, mas melhora o tema) */
-    scrollbar-width: thin;
-    scrollbar-color: var(--text-highlight-color) transparent; /* Cor do scroll e do track */
+    box-sizing: border-box;
+    /*
+       IMPORTANTE: Ajuste este padding para que o conteúdo (brasão e texto)
+       fique bem posicionado DENTRO da área desenhada da sua imagem de pergaminho.
+       Use porcentagens para ser responsivo com o tamanho do pergaminho.
+       Valores menores de padding-top e padding-bottom dão mais espaço vertical para o texto.
+    */
+    padding: 12% 10% 8% 10%; /* Ex: Topo(15%), Direita(12%), Baixo(5%), Esquerda(12%). AJUSTE! */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: hidden; /* FORÇA a não aparição da barra de rolagem */
 }
 
-/* Estilo para Webkit (Chrome, Safari) */
-.scroll-content-wrapper::-webkit-scrollbar {
-    width: 8px;
-}
-.scroll-content-wrapper::-webkit-scrollbar-track {
-    background: transparent;
-}
-.scroll-content-wrapper::-webkit-scrollbar-thumb {
-    background-color: var(--text-highlight-color);
-    border-radius: 10px;
-    border: 2px solid transparent; /* Para dar um padding visual */
+#crest-img {
+    width: 22%; /* Tamanho do brasão relativo à largura do #scroll-content-area */
+    max-width: 65px; /* Limite máximo para o tamanho do brasão. AJUSTE! */
+    height: auto;
+    margin-bottom: 10px; /* Espaço entre brasão e o primeiro parágrafo. AJUSTE! */
+    display: none; /* Começa escondido, JS mostra */
 }
 
-
-.scroll-content-wrapper h1 {
-    font-size: clamp(1.5em, 5vw, 1.8em);
-    text-align: center;
-    margin-bottom: 15px;
-    color: #7a0d05; /* Cor destaque para o título */
+#invite-text-wrapper {
+    width: 100%;
+    text-align: left; /* Ou 'center' se preferir o texto centralizado */
+    color: var(--text-color-parchment);
 }
 
-.scroll-content-wrapper p {
-    font-size: clamp(0.9em, 3.5vw, 1.1em);
-    line-height: 1.5;
-    margin-bottom: 10px;
-    color: var(--ink-color); /* Certifique-se que esta cor tem bom contraste com seu pergaminho.png */
+/* Não há mais H1 específico aqui, pois foi removido do JS */
+
+#invite-text-wrapper p {
+    /*
+      AJUSTE O TAMANHO DA FONTE AQUI PARA CABER O TEXTO!
+      Tente valores menores se o texto não estiver cabendo.
+    */
+    font-size: clamp(0.8em, 2.7vw, 1em); /* Exemplo: Mínimo 0.8em, ideal 2.7% da largura da viewport, Máximo 1em. AJUSTE! */
+    /*
+      AJUSTE O ESPAÇAMENTO ENTRE LINHAS (DENTRO DE UM PARÁGRAFO)!
+      Valores menores deixam o texto mais compacto.
+    */
+    line-height: 1.35; /* Exemplo. AJUSTE! */
+    /*
+      AJUSTE O ESPAÇAMENTO ABAIXO DE CADA PARÁGRAFO!
+    */
+    margin-bottom: 6px; /* Exemplo. AJUSTE! */
 }
 
-.scroll-content-wrapper strong {
-    color: var(--text-highlight-color);
+#invite-text-wrapper strong {
+    font-weight: bold; /* A fonte MedievalSharp já é bastante estilizada */
+    color: #5c3a21; /* Um tom um pouco diferente para destaque, se necessário */
 }
 
-/* Animação de "fechamento mágico" para o pergaminho */
-.screen.closing {
-    transform: scale(0.7) rotateY(-90deg) translateZ(-100px); /* Afasta um pouco para dar profundidade */
-    opacity: 0;
+/* Efeito de cursor para máquina de escrever (opcional, mas mantido) */
+.typing-cursor::after {
+    content: '_';
+    display: inline-block; /* Necessário para que o cursor apareça na mesma linha */
+    animation: blink-cursor 0.7s infinite;
+    margin-left: 2px; /* Pequeno espaço após o último caractere */
 }
 
-/* Animação de "reaparecimento" da carta */
-.screen.reappearing {
-    transform: scale(1) rotateY(0deg);
-    opacity: 1;
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
