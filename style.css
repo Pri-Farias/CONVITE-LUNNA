@@ -78,11 +78,12 @@ body, html {
     background-repeat: no-repeat;
     background-position: center;
 
-    width: 100vw;  /* Reduzido um pouco de 95vw para mais margem */
-    max-width: 550px;          
+    width: 85vw;  /* Reduzido um pouco de 95vw para mais margem */
+    max-width: 580px;          
     
-    height: 108vh; /* Reduzido um pouco de 110vh, não pode ser > 100vh para caber na tela */
-    max-height: 800px; /* Reduzido um pouco de 810px */
+    height: auto; /* Reduzido um pouco de 110vh, não pode ser > 100vh para caber na tela */
+    max-height: 85vh; /* Reduzido um pouco de 810px */
+    min-height: 95vh;
     
     padding: 45px 35px 30px 35px; 
     box-sizing: border-box;
@@ -112,7 +113,7 @@ body, html {
        padding-bottom da #carta-aberta (30px)
        Total Exemplo: 45 + 70 + 10 + 5 + 30 = 160px
     */
-    max-height: calc(100% - 160px); /* AJUSTE ESTE VALOR (160px) */
+    max-height:  calc(100% - (45px + 110px + 15px + 30px));
     overflow-y: auto; 
     padding-right: 15px; 
     padding-left: 5px;  
@@ -187,50 +188,64 @@ body, html {
         font-size: 1.1rem;
     } 
     #carta-aberta {
-        padding: 40px 25px 25px 25px;
-        max-width: 90vw; 
-        height: 85vh;    /* Ajustado */
-        max-height: 900px; /* Ajustado */
+       width: 90vw;       
+        max-width: 95%;     
+        height: auto;       
+        min-height: 80vh;   
+        max-height: 90vh;   
+
+        /* PADDINGS LATERAIS REDUZIDOS */
+        padding: 30px 20px 20px 20px; /* top, SIDES, bottom */
     }
     #brasao-hogwarts {
-        width: 60px;
-        margin-bottom: 8px;
+        width: 70px;
+        margin-bottom: 10px;
     }
     #texto-convite-container {
         /* Ex: 40(padT) + 60(bras) + 8(mBras) + 5(mCont) + 25(padB) = 138px */
-        max-height: calc(100% - 138px); /* AJUSTE! */
+        max-height: calc(100% - (30px + 70px + 10px + 20px));
+        padding-right: 6px; /* Espaço para scrollbar */
+        padding-left: 3px;
     }
     #texto-convite {
-        font-size: 0.95rem; /* Ajustado */
-        line-height: 1.6;  /* Ajustado */
+        font-size: 0.9rem; /* Ajustado */
+        line-height: 1.5;  /* Ajustado */
     }
 }
 
 @media (max-width: 480px) { 
     #carta-fechada {
-        width: 160px; /* Ajuste se necessário */
+        width: 150px; /* Ajuste se necessário */
     }
     #instrucao-abrir {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
     #carta-aberta {
-        padding: 30px 15px 15px 15px;
-        height: 300px;         
-        max-height: 900px;    
-        max-width: 150vw;
+       width: 95vw;        /* Ocupa quase toda a largura */
+        max-width: 100%;    /* Não pode ser mais larga que a tela */
+        box-sizing: border-box; /* Crucial se width é perto de 100% e há padding */
+        
+        min-height: 75vh;   /* Tentar dar o máximo de altura */
+        max-height: 85vh;   /* Quase toda a altura da tela */
+        height: auto;       
+
+        /* PADDINGS LATERAIS MUITO PEQUENOS */
+        padding: 25px 15px 15px 15px; /* top, SIDES (5px), bottom */
     }
     #brasao-hogwarts { 
-        width: 45px;
-        margin-bottom: 5px;
+        width: 50px;
+        margin-bottom: 8px;
     }
     #texto-convite-container {
-        /* Ex: 30(padT) + 45(bras) + 5(mBras) + 5(mCont) + 15(padB) = 100px */
-        max-height: calc(100% - 155px); /* AJUSTE! */
-        /* Ou uma vh mais direta se calc estiver difícil: max-height: 60vh; */
+     max-height: calc(100% - (25px + 50px + 8px + 15px));
+        padding-right: 4px; /* Espaço mínimo para scrollbar, se houver */
+        padding-left: 2px;
+        margin-top: 2px;
+        overflow-y: auto; /* Manter caso o texto ainda seja muito longo */
     }
     #texto-convite {
         font-size: 0.85rem; 
-        line-height: 1.5;
+        line-height: 1.6;
     }
     #coruja-animacao {
         width: 80px;
@@ -239,25 +254,25 @@ body, html {
 
 @media (max-height: 500px) and (orientation: landscape) {
      #carta-aberta {
-        padding: 15px 20px 10px 20px;
+      width: 85vw; /* Em landscape, a largura pode ser maior */
+        max-width: 450px; /* Limite para não ficar excessiva */
         min-height: auto; 
-        max-height: 480px; 
-        width: 80vw; 
-        max-width: 400px; 
-        height: 100vh; /* Permite que a altura se ajuste ao conteúdo */
+        max-height: 90vh; /* Quase toda a altura */
+        padding: 15px 20px 10px 20px; /* Menos padding vertical, laterais podem ser um pouco maiores */
     }
     #brasao-hogwarts {
-        width: 30px; 
-        margin-bottom: 3px;
+        width: 40px; 
+        margin-bottom: 5px;
     }
     #texto-convite-container {
         /* Ex: 15(padT) + 30(bras) + 3(mBras) + 0(mCont) + 10(padB) = 58px */
-        max-height: calc(100% - 95px); /* AJUSTE! */
-        margin-top: 2px; /* Ajustado */
+       max-height: calc(100% - (15px + 40px + 5px + 10px)); 
+        margin-top: 3px;
+        padding-right: 2px;
     }
     #texto-convite {
-        font-size: 0.8rem;
-        line-height: 1.4;
+        font-size: 0.75rem;
+        line-height: 1.3;
     }
     #instrucao-abrir {
         font-size: 0.9rem;
