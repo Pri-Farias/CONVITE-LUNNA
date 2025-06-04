@@ -120,7 +120,7 @@ html, body {
     .parchment {
         width: 100%;
         height: 100%;
-        padding: 25px 30px 20px 30px; /* Padding: Topo, Laterais AUMENTADAS, Fundo */
+        padding: 45px 30px 45px 30px; /* Padding: Topo, Laterais AUMENTADAS, Fundo */
     }
 
     #parchment-crest {
@@ -151,7 +151,7 @@ html, body {
     .parchment {
         width: 100%;
         height: 100%;
-        padding: 35px 45px 30px 45px; /* Padding: Topo MAIOR, Laterais MAIORES, Fundo MAIOR */
+        padding: 75px 45px 100px 45px; /* Padding: Topo MAIOR, Laterais MAIORES, Fundo MAIOR */
     }
 
     #parchment-crest {
