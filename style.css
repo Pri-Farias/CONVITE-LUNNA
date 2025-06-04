@@ -113,7 +113,7 @@ html, body {
     #open-letter-screen {
         width: 92%; /* Mais largo no celular */
         max-width: 420px; /* Um limite para celulares maiores */
-        height: 90vh; /* Usar bastante da altura da tela */
+        height: 150vh; /* Usar bastante da altura da tela */
         max-height: none; /* Sem limite máximo de altura explícito, deixa o vh controlar */
     }
 
