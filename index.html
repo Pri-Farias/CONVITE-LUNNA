@@ -2,32 +2,38 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦉 Convite Mágico - Aniversário da Lunna!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Convite Mágico - Lunna</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts (opcional, mas recomendado) -->
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="universe-background">
-
-        <div id="initial-screen">
-            <img id="closed-letter-img" src="assets/carta-fechada-selo.png" alt="Carta Fechada">
-            <p id="tap-to-open-text">Toque para Abrir</p>
+    <div class="invitation-container">
+        <!-- Tela Inicial com a Carta Fechada -->
+        <div id="closed-letter-screen" class="screen active">
+            <img src="assets/carta-fechada-selo.png" alt="Carta Fechada" id="closed-letter-image">
+            <p class="tap-to-open">Toque para Revelar</p>
         </div>
 
-        <div id="opened-letter-container" class="hidden">
-            <div class="parchment-bg">
-                <img class="crest-img" src="assets/brasao-hogwarts.png" alt="Brasão">
-                <div id="invitation-text-content">
-                    <!-- Texto será inserido pelo JS -->
-                </div>
+        <!-- Tela do Pergaminho -->
+        <div id="scroll-screen" class="screen hidden">
+            <div class="scroll-content-wrapper">
+                <h1>🪄 Convite Ultra-Secreto 🪄</h1>
+                <p>Prezado(a) bruxinho(a),</p>
+                <p>Um elfo fofoqueiro contou: no dia <strong>19/06</strong>, a bruxinha poderosa <strong>LUNNA</strong> completa mais um ciclo encantado! ✨🧁</p>
+                <p>Pra celebrar, teremos um bolinho que desaparece, docinhos mágicos e sorrisos brilhando no escuro! Nada de dragões ou aulas de poções — é só um bolinho, mesmo!</p>
+                <p>📅 Data encantada: <strong>19/06 (quarta)</strong></p>
+                <p>⏰ Horário do feitiço: <strong>18h</strong> (sem atraso ou vira sapo!)</p>
+                <p>📍 Local encantado: <strong>No Refúgio Secreto da Lunna</strong></p>
+                <p>Esperamos você pra espalhar magia e dar boas risadas! 🎉</p>
             </div>
         </div>
-
     </div>
 
-    <audio id="magic-music" src="assets/musica-magica.mp3" loop></audio>
+    <audio id="background-music" loop>
+        <source src="assets/musica-magica.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
 
     <script src="script.js"></script>
 </body>

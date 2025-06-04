@@ -1,142 +1,155 @@
-/* ===== RESET BÁSICO E ESTILOS GLOBAIS ===== */
-* {
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
+:root {
+    --ink-color: #4a3b31;   /* Cor da tinta, ajuste se necessário sobre seu pergaminho */
+    --text-highlight-color: #5c3a21;
+}
+
+body, html {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-html, body {
-    height: 100%;
-    font-family: 'Merriweather', serif;
-    color: #333; /* Cor de texto padrão */
-}
-
-.hidden {
-    display: none !important; /* Para garantir que está escondido */
-}
-
-/* ===== FUNDO E CONTAINER PRINCIPAL ===== */
-.universe-background {
     width: 100%;
-    height: 100vh;
-    background-image: url('assets/fundo-universo.png');
+    height: 100%;
+    overflow: hidden;
+    font-family: 'MedievalSharp', cursive;
+    /* Fundo com sua imagem do universo */
+    background: url('assets/fundo-universo.png') no-repeat center center fixed;
     background-size: cover;
-    background-position: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px; /* Espaçamento das bordas da tela */
-    overflow: hidden; /* Para evitar barras de rolagem no body */
+    color: var(--ink-color);
 }
 
-/* ===== TELA INICIAL (CARTA FECHADA) ===== */
-#initial-screen {
-    text-align: center;
-    cursor: pointer;
-    /* Animação de entrada (opcional) */
-    opacity: 0;
-    animation: fadeIn 1s forwards;
-}
-
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
-
-#closed-letter-img {
-    width: 130px; /* Ajuste conforme sua imagem */
-    max-width: 40%;
-    height: auto;
-    margin-bottom: 15px;
-    transition: transform 0.5s ease-in-out, opacity 0.4s ease-out;
-}
-
-#tap-to-open-text {
-    color: #FFD700; /* Dourado */
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: 1.1em;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
-    animation: blink-soft 1.8s infinite;
-}
-
-@keyframes blink-soft {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-/* Efeito ao clicar na carta fechada (será adicionado via JS) */
-#initial-screen.closing #closed-letter-img {
-    transform: scale(0) rotate(180deg);
-    opacity: 0;
-}
-#initial-screen.closing #tap-to-open-text {
-    opacity: 0;
-    transition: opacity 0.3s ease-out;
-}
-
-
-/* ===== CARTA ABERTA (CELULAR PRIMEIRO) ===== */
-#opened-letter-container {
-    width: 90%; /* Largura relativa à tela do celular */
-    max-width: 380px; /* Limite para celulares maiores não ficarem muito largos */
-    height: 88vh; /* Altura relativa à tela do celular */
-    /* max-height NÃO DEFINIDO AQUI, deixamos vh controlar */
-    background-color: transparent; /* Só para o container, o .parchment-bg terá a imagem */
-    position: relative; /* Se precisar posicionar algo absoluto dentro */
-
-    /* Animação de entrada da carta aberta */
-    transform: scale(0.5) rotate(-10deg);
-    opacity: 0;
-    /* A transição será acionada ao remover a classe .hidden e adicionar .visible (via JS) */
-}
-
-#opened-letter-container.visible {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease-in;
-}
-
-.parchment-bg {
+.invitation-container {
     width: 100%;
     height: 100%;
-    background-image: url('assets/carta-aberta-fundo.png');
-    background-size: 100% 100%; /* Estica para preencher. Cuidado com distorção. */
-    background-repeat: no-repeat;
-    padding: 25px 25px 20px 25px; /* Topo, Laterais, Fundo */
-    border-radius: 8px; /* Suaviza as bordas do pergaminho */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    overflow: hidden; /* ESSENCIAL para não ter scroll no pergaminho */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    perspective: 1200px; /* Para efeitos 3D */
+}
 
+.screen {
+    width: 90vw;
+    max-width: 400px; /* Limite máximo para não ficar gigante em tablets */
+    height: auto;
+    position: absolute;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centraliza o brasão horizontalmente */
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.7s ease-in-out, transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
-.crest-img {
-    width: 55px; /* Tamanho do brasão para celular */
+.screen.hidden {
+    opacity: 0;
+    transform: scale(0.7) rotateY(90deg);
+    pointer-events: none;
+}
+
+.screen.active {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+    pointer-events: auto;
+}
+
+/* Tela da Carta Fechada */
+#closed-letter-screen {
+    cursor: pointer;
+}
+
+#closed-letter-image {
+    width: 70vw; /* Ajuste conforme o tamanho/aspecto da sua imagem */
+    max-width: 280px;
     height: auto;
-    margin-bottom: 12px; /* Espaço abaixo do brasão */
+    display: block;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
 }
 
-#invitation-text-content {
-    width: 100%;
-    flex-grow: 1; /* Faz o texto ocupar o espaço vertical restante */
-    overflow-y: auto; /* PARA TESTE INICIAL: DEIXE 'auto' para ver se precisa de scroll */
-                      /* DEPOIS MUDE PARA 'hidden' */
-    color: #4A3B31; /* Marrom escuro para o texto */
-    font-size: clamp(12px, 3.9vw, 15px); /* Fonte para celular */
-    line-height: 1.5; /* Entrelinhamento para celular */
-    white-space: pre-wrap; /* Mantém as quebras de linha do JS */
-    text-align: left;
-    /* Adiciona um pequeno padding interno se o padding do .parchment-bg não for suficiente */
-    /* padding: 0 5px; */
-}
-
-/* Estilo para o nome da aniversariante */
-#invitation-text-content .guest-name {
-    display: block; /* Para ocupar a linha e permitir centralização/margens */
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: 1.8em; /* Relativo ao font-size do #invitation-text-content */
-    color: #795548; /* Um tom de marrom mais forte */
+.tap-to-open {
+    font-size: clamp(16px, 4vw, 20px); /* Tamanho responsivo */
+    color: #fff0c4; /* Cor clara para contraste com fundo escuro e carta */
+    text-shadow: 0 0 5px #000, 0 0 10px #ffc107; /* Brilho mágico */
     text-align: center;
-    margin: 8px 0 12px 0; /* Espaçamento vertical */
+    animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 8px #000, 0 0 15px #ffeb3b; }
+}
+
+/* Tela do Pergaminho */
+#scroll-screen {
+    /* Usar a imagem do pergaminho como fundo */
+    background: url('assets/carta-aberta-fundo.png') no-repeat center center;
+    background-size: contain; /* Ou cover, dependendo da imagem e se quer que ela preencha ou caiba */
+    padding: 15% 12%; /* Ajuste o padding para o texto caber dentro da área visual do seu pergaminho */
+                      /* Ex: Se o seu pergaminho tem bordas desenhadas, o texto não deve ir até a borda física do div */
+    box-sizing: border-box;
+    width: 90vw;
+    max-width: 450px; /* Pode ser um pouco maior que a carta fechada */
+    aspect-ratio: 3/4; /* TENTE AJUSTAR ISSO AO ASPECTO DA SUA IMAGEM DE PERGAMINHO */
+                       /* Se sua imagem de pergaminho for 600x800px, a proporção é 3/4 */
+                       /* Se for quadrada, 1/1. Se for paisagem, 4/3. */
+                       /* Isso ajuda a manter a forma da imagem de fundo */
+    height: auto; /* O aspect-ratio vai cuidar disso se width estiver definido */
+    overflow: hidden; /* Se o conteúdo vazar, esconda. */
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+}
+
+.scroll-content-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; /* Permite rolagem se o texto for muito grande para o pergaminho */
+    /* Estilo para a barra de rolagem (opcional, mas melhora o tema) */
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-highlight-color) transparent; /* Cor do scroll e do track */
+}
+
+/* Estilo para Webkit (Chrome, Safari) */
+.scroll-content-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+.scroll-content-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+.scroll-content-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--text-highlight-color);
+    border-radius: 10px;
+    border: 2px solid transparent; /* Para dar um padding visual */
+}
+
+
+.scroll-content-wrapper h1 {
+    font-size: clamp(1.5em, 5vw, 1.8em);
+    text-align: center;
+    margin-bottom: 15px;
+    color: #7a0d05; /* Cor destaque para o título */
+}
+
+.scroll-content-wrapper p {
+    font-size: clamp(0.9em, 3.5vw, 1.1em);
+    line-height: 1.5;
+    margin-bottom: 10px;
+    color: var(--ink-color); /* Certifique-se que esta cor tem bom contraste com seu pergaminho.png */
+}
+
+.scroll-content-wrapper strong {
+    color: var(--text-highlight-color);
+}
+
+/* Animação de "fechamento mágico" para o pergaminho */
+.screen.closing {
+    transform: scale(0.7) rotateY(-90deg) translateZ(-100px); /* Afasta um pouco para dar profundidade */
+    opacity: 0;
+}
+
+/* Animação de "reaparecimento" da carta */
+.screen.reappearing {
+    transform: scale(1) rotateY(0deg);
+    opacity: 1;
 }
