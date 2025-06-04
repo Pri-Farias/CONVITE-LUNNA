@@ -128,7 +128,7 @@ html, body {
     }
     .parchment {
         /* Ajustar padding-top também para telas menores */
-        padding: 55px 30px 5px 30px;
+        padding: 60px 35px 30px 35px;
     }
     #parchment-crest {
         width: 55px;
