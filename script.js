@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM Carregado. Script iniciado."); // Log 1
+    console.log("DOM Carregado. Script iniciado.");
 
     // Elementos da UI
     const initialScreen = document.getElementById('initial-screen');
@@ -8,23 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundMusic = document.getElementById('background-music');
     const crestImage = document.getElementById('crest-img');
 
-    // Log para verificar se os elementos foram encontrados
-    console.log("Elemento initialScreen:", initialScreen); // Log 2
-    console.log("Elemento scrollScreen:", scrollScreen);   // Log 3
-    console.log("Elemento crestImage:", crestImage);     // Log 4
+    console.log("Elemento initialScreen:", initialScreen);
+    console.log("Elemento scrollScreen:", scrollScreen);
+    console.log("Elemento crestImage:", crestImage);
+    console.log("Elemento backgroundMusic:", backgroundMusic); // Log para a música
 
     // Configurações
-    const scrollOpenDuration = 20000; // Duração que o pergaminho fica aberto
-    const typingSpeed = 40;    // Velocidade da "máquina de escrever"
+    const scrollOpenDuration = 20000;
+    const typingSpeed = 40;
     let autoCloseTimer = null;
-    let musicPlayedOnce = false;
+    let userHasInteracted = false; // Nova flag para controlar a primeira interação
 
     // Texto do convite
     const invitationTextLines = [
         "Prezado(a) bruxinho(a),",
         "Um elfo fofoqueiro contou: no dia <strong>19/06</strong>, a bruxinha poderosa <strong>LUNNA</strong> completa mais um ciclo encantado! ✨🧁",
         "Pra celebrar, teremos um bolinho que desaparece, docinhos mágicos e sorrisos brilhando no escuro! Nada de dragões ou aulas de poções — é só um bolinho, mesmo!",
-        "📅 Data encantada: <strong>19/06 (quarta)</strong>",
+        "📅 Data encantada: <strong>19/06 (quinta-feira)</strong>",
         "⏰ Horário do feitiço: <strong>18h</strong> (sem atraso ou vira sapo!)",
         "📍 Local encantado: <strong>No Refúgio Secreto da Lunna</strong>",
         "Esperamos você pra espalhar magia e dar boas risadas! 🎉"
@@ -65,84 +65,107 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } else {
             if (autoCloseTimer) clearTimeout(autoCloseTimer);
-            console.log("Todas as linhas escritas. Agendando fechamento."); // Log 5
+            console.log("Todas as linhas escritas. Agendando fechamento.");
             autoCloseTimer = setTimeout(hideScroll, scrollOpenDuration);
         }
     }
 
-    function showScroll() {
-        console.log("Função showScroll() chamada."); // Log 6
-
-        // Verifica se os elementos cruciais existem antes de tentar usá-los
-        if (!initialScreen || !scrollScreen || !crestImage) {
-            console.error("ERRO: Elemento 'initial-screen', 'scroll-screen' ou 'crest-img' NÃO ENCONTRADO no HTML. Verifique os IDs!");
-            return; // Para a execução da função se elementos não forem achados
-        }
-
-        initialScreen.classList.remove('active');
-        scrollScreen.classList.add('active');
-        crestImage.style.display = 'block'; // Mostra o brasão
-        console.log("Telas trocadas. Brasão visível.");
-
-        inviteTextWrapper.innerHTML = ''; // Limpa texto anterior
-        writeAllLines(invitationTextLines); // Começa a escrever
-
-        // Lógica da música
+    function playMusic() {
         if (backgroundMusic && typeof backgroundMusic.play === 'function') {
-            if (!musicPlayedOnce || backgroundMusic.paused) {
-                backgroundMusic.currentTime = 0;
-                backgroundMusic.play().catch(error => {
-                    console.warn("Música não pôde ser iniciada:", error);
-                });
-                musicPlayedOnce = true;
+            // Verifica se o usuário já interagiu ou se a música está pausada
+            if (userHasInteracted && backgroundMusic.paused) {
+                backgroundMusic.currentTime = 0; // Reinicia a música
+                const playPromise = backgroundMusic.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // Autoplay iniciado com sucesso
+                        console.log("Música tocando.");
+                    }).catch(error => {
+                        // Autoplay foi bloqueado.
+                        console.error("Erro ao tentar tocar música:", error);
+                        // Aqui, em alguns casos, o navegador pode mostrar um controle de play/pause nativo.
+                        // Ou você poderia mostrar um botão "Tocar Música" se o autoplay falhar consistentemente.
+                    });
+                }
+            } else if (!userHasInteracted) {
+                console.log("Música não pode tocar ainda, aguardando interação do usuário.");
             }
         } else {
             console.warn("Elemento de música não encontrado ou não é um elemento de áudio válido.");
         }
     }
 
-    function hideScroll() {
-        console.log("Função hideScroll() chamada."); // Log 7
+    function showScroll() {
+        console.log("Função showScroll() chamada.");
 
         if (!initialScreen || !scrollScreen || !crestImage) {
-            console.error("ERRO: Elemento 'initial-screen', 'scroll-screen' ou 'crest-img' NÃO ENCONTRADO ao tentar fechar.");
+            console.error("ERRO: Elemento 'initial-screen', 'scroll-screen' ou 'crest-img' NÃO ENCONTRADO.");
+            return;
+        }
+
+        initialScreen.classList.remove('active');
+        scrollScreen.classList.add('active');
+        crestImage.style.display = 'block';
+        console.log("Telas trocadas. Brasão visível.");
+
+        inviteTextWrapper.innerHTML = '';
+        writeAllLines(invitationTextLines);
+
+        // Tenta tocar a música AGORA que o usuário interagiu (clicou para abrir)
+        playMusic();
+    }
+
+    function hideScroll() {
+        console.log("Função hideScroll() chamada.");
+
+        if (!initialScreen || !scrollScreen || !crestImage) {
+            console.error("ERRO: Elemento 'initial-screen', 'scroll-screen' ou 'crest-img' NÃO ENCONTRADO ao fechar.");
             return;
         }
 
         scrollScreen.classList.remove('active');
-        crestImage.style.display = 'none'; // Esconde o brasão
+        crestImage.style.display = 'none';
         initialScreen.classList.add('active');
         console.log("Pergaminho fechado. Tela inicial reativada.");
 
         if (backgroundMusic && typeof backgroundMusic.pause === 'function' && !backgroundMusic.paused) {
             backgroundMusic.pause();
+            console.log("Música pausada.");
         }
-        musicPlayedOnce = false;
+        // Não resetamos userHasInteracted aqui, pois a primeira interação já ocorreu.
         if (autoCloseTimer) clearTimeout(autoCloseTimer);
     }
 
-    // --- Event Listeners ---
-    // Adicionada verificação para garantir que 'initialScreen' existe
+    // --- Event Listener para a primeira interação ---
     if (initialScreen) {
         initialScreen.addEventListener('click', () => {
-            console.log("CLIQUE DETECTADO em initialScreen!"); // Log 8
-            
-            // Lógica de "desbloqueio" da música
-            if (backgroundMusic && typeof backgroundMusic.play === 'function' && backgroundMusic.paused) {
-                const promise = backgroundMusic.play();
-                if (promise !== undefined) {
-                    promise.then(_ => {
-                        if (backgroundMusic && typeof backgroundMusic.pause === 'function') {
-                             backgroundMusic.pause(); // Pausa imediatamente, só queríamos a permissão
-                        }
-                    }).catch(error => {
-                        // Silencioso aqui, o warning principal é no play() dentro de showScroll
-                    });
+            console.log("CLIQUE DETECTADO em initialScreen!");
+
+            if (!userHasInteracted) {
+                userHasInteracted = true; // Marca que o usuário interagiu pela primeira vez
+                console.log("Primeira interação do usuário registrada.");
+
+                // Tenta "desbloquear" o áudio, especialmente útil para iOS Safari.
+                // Às vezes, um play() seguido de um pause() no primeiro evento de clique
+                // é necessário para permitir futuros plays programáticos.
+                if (backgroundMusic && typeof backgroundMusic.play === 'function') {
+                    const unlockPromise = backgroundMusic.play();
+                    if (unlockPromise !== undefined) {
+                        unlockPromise.then(() => {
+                            if (backgroundMusic && typeof backgroundMusic.pause === 'function') {
+                                backgroundMusic.pause(); // Pausa imediatamente.
+                                console.log("Áudio desbloqueado e pausado.");
+                            }
+                        }).catch((error) => {
+                            console.warn("Tentativa de desbloqueio de áudio falhou (pode ser normal):", error);
+                        });
+                    }
                 }
             }
-            showScroll(); // Chama a função para mostrar o pergaminho
-        });
+            showScroll(); // Chama a função para mostrar o pergaminho (que agora tentará tocar a música)
+        }, { once: false }); // { once: false } é o padrão, mas só para deixar claro que este listener continua ativo.
     } else {
-        console.error("ERRO CRÍTICO: Elemento 'initial-screen' NÃO ENCONTRADO no HTML. O clique não funcionará."); // Log 9
+        console.error("ERRO CRÍTICO: Elemento 'initial-screen' NÃO ENCONTRADO no HTML.");
     }
 });
