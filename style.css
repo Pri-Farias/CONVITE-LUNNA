@@ -1,280 +1,172 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: 'MedievalSharp', cursive;
-    background-color: #10101a;
-}
+body {
+            font-family: 'MedievalSharp', cursive;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Evita rolagem indesejada */
+            background-color: #0d1117; /* Fundo escuro estilo universo */
+        }
 
-.container-magico {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('assets/fundo-universo.png'); /* Certifique-se que o nome do arquivo está correto */
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
+        /* Estilo para o contêiner principal do convite */
+        .invite-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ocupa a altura total da viewport */
+            width: 100vw; /* Ocupa a largura total da viewport */
+            background: linear-gradient(180deg, #0a0a1a 0%, #2c0a3a 100%); /* Gradiente de fundo estilo universo */
+            position: relative;
+            overflow: hidden;
+        }
 
-/* --- TELA INICIAL (CARTA FECHADA) --- */
-#tela-inicial {
-    display: flex; /* Para centralizar seu conteúdo */
-    flex-direction: column; /* Empilhar imagem e texto */
-    align-items: center;    /* Centraliza horizontalmente img e p */
-    justify-content: center;/* Centraliza verticalmente img e p */
-    cursor: pointer;
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    /* text-align: center; não é mais estritamente necessário para os filhos diretos
-       mas não prejudica para o texto dentro de #instrucao-abrir */
-}
+        /* Estilo para a tela inicial com a carta fechada */
+        .initial-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: opacity 1s ease-out, transform 1s ease-out; /* Transição suave para o efeito mágico */
+        }
 
-#carta-fechada {
-    width: 280px; /* Ajuste conforme sua imagem */
-    max-width: 70vw; /* Um pouco menor que 80vw para dar margem */
-    height: auto;
-    box-shadow: 0 0 20px rgba(255, 223, 186, 0.5);
-    transition: transform 0.3s ease-in-out;
-}
+        /* Estilo para a carta fechada */
+        .closed-letter {
+            width: 80vw; /* Largura responsiva */
+            max-width: 300px; /* Largura máxima para telas maiores */
+            height: auto;
+            cursor: pointer;
+            position: relative;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5)); /* Brilho dourado */
+            border-radius: 10px; /* Bordas arredondadas para a carta */
+        }
 
-#carta-fechada:hover {
-    transform: scale(1.05);
-}
+        /* Estilo para o selo da carta */
+        .letter-seal {
+            position: absolute;
+            bottom: 10%; /* Posiciona na parte inferior da carta */
+            left: 50%; /* Centraliza horizontalmente no envelope */
+            transform: translate(-50%, 0); /* Ajuste para centralização perfeita */
+            width: 25%; /* Tamanho responsivo do selo */
+            max-width: 80px; /* Tamanho máximo do selo */
+            height: auto;
+            z-index: 10; /* Garante que o selo fique sobre a carta */
+        }
 
-#instrucao-abrir {
-    color: #f0e68c;
-    font-family: 'Cinzel', serif;
-    font-size: 1.2rem;
-    margin-top: 20px;
-    animation: piscar 1.5s infinite;
-    text-shadow: 0 0 5px #ffd700;
-    text-align: center; /* Garante que o texto no P seja centralizado */
-}
+        /* Animação de piscar para o botão "Toque para abrir" */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
 
-@keyframes piscar {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
+        /* Estilo para o botão "Toque para abrir" */
+        .tap-to-open-button {
+            background-color: #4a0080; /* Roxo escuro mágico */
+            color: #ffd700; /* Dourado */
+            padding: 1rem 2rem;
+            border-radius: 9999px; /* Bordas arredondadas */
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 2rem;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7); /* Sombra dourada */
+            animation: blink 1.5s infinite; /* Aplica a animação de piscar */
+            border: 2px solid #ffd700; /* Borda dourada */
+            transition: background-color 0.3s ease;
+        }
 
-/* --- CONTAINER DA CARTA ABERTA --- */
-#carta-container {
-    position: relative; /* Para a coruja */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* CORREÇÃO CRÍTICA: Deve ocupar o espaço do pai, não mais */
-    width: 100%; 
-    height: 100%; 
-    /* As classes .escondido e .visivel controlarão sua aparição.
-       Quando .visivel é adicionada pelo JS, o display:flex aqui é importante. */
-}
+        .tap-to-open-button:hover {
+            background-color: #6a00a0; /* Roxo mais claro ao passar o mouse */
+        }
 
-#carta-aberta {
-    background-image: url('assets/carta-aberta-fundo.png');
-    background-size: 100% 100%; 
-    background-repeat: no-repeat;
-    background-position: center;
+        /* Estilo para a carta aberta (inicialmente oculta) */
+        .open-letter-content {
+            background-image: url('assets/carta-aberta-fundo.png'); /* Imagem de fundo de pergaminho */
+            background-size: cover;
+            background-position: center;
+            padding: 5vw; /* Preenchimento responsivo */
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            max-width: 90vw; /* Largura máxima para telas menores */
+            width: 700px; /* Largura preferencial */
+            min-height: 80vh; /* Altura mínima para o conteúdo */
+            height: auto;
+            color: #4a2c0a; /* Cor do texto marrom escuro */
+            font-family: 'Playfair Display', serif; /* Fonte serifada clássica */
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem); /* Tamanho de fonte responsivo */
+            opacity: 0; /* Inicialmente invisível */
+            transform: scale(0.8); /* Inicialmente menor */
+            transition: opacity 1s ease-in, transform 1s ease-in; /* Transição suave para aparecer */
+            text-align: center; /* Centraliza o texto */
+            position: relative;
+            overflow-y: auto; /* Adiciona rolagem se o conteúdo for muito longo */
+            display: flex; /* Usa flexbox para organizar o conteúdo */
+            flex-direction: column; /* Organiza os itens em coluna */
+            align-items: center; /* Centraliza os itens horizontalmente */
+        }
 
-    width: 85vw;  /* Reduzido um pouco de 95vw para mais margem */
-    max-width: 580px;          
-    
-    height: auto; /* Reduzido um pouco de 110vh, não pode ser > 100vh para caber na tela */
-    max-height: 85vh; /* Reduzido um pouco de 810px */
-    min-height: 95vh;
-    
-    padding: 45px 35px 30px 35px; 
-    box-sizing: border-box;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.7s ease-in, transform 0.7s ease-in;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* position: relative; não é mais necessário aqui, a coruja usa #carta-container */
-}
+        /* Estilo para o brasão no topo da carta aberta */
+        .open-letter-crest {
+            width: 15%; /* Tamanho responsivo do brasão */
+            max-width: 100px; /* Tamanho máximo do brasão */
+            height: auto;
+            margin-bottom: 1.5rem; /* Espaçamento abaixo do brasão */
+        }
 
-#brasao-hogwarts {
-    width: 110px; /* Ajustado para ser um pouco menor que antes (era 100px) */
-    max-width: 25%; /* Ajustado */
-    margin-bottom: 15px; 
-}
+        /* Estilo para o título do convite */
+        .invite-title {
+            font-size: clamp(1.8rem, 5vw, 3rem); /* Tamanho de fonte responsivo para o título */
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #8b4513; /* Marrom mais escuro */
+            text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.5); /* Sombra dourada para o título */
+        }
 
-#texto-convite-container {
-    width: 100%;
-    /* VALOR DE SUBTRAÇÃO:
-       padding-top de #carta-aberta (45px) +
-       altura do #brasao-hogwarts (ex: 70px) +
-       margin-bottom do #brasao-hogwarts (10px) +
-       margin-top do #texto-convite-container (5px) +
-       padding-bottom da #carta-aberta (30px)
-       Total Exemplo: 45 + 70 + 10 + 5 + 30 = 160px
-    */
-    max-height:  calc(100% - (45px + 110px + 15px + 30px));
-    overflow-y: auto; 
-    padding-right: 15px; 
-    padding-left: 5px;  
-    box-sizing: border-box;
-    /* text-align: center; não é necessário aqui, pois o conteúdo é #texto-convite que é text-align: left */
-    margin-top: 5px;
-}
+        /* Estilo para o corpo do texto do convite */
+        .invite-text {
+            text-align: left; /* Alinha o texto à esquerda dentro do pergaminho */
+            width: 100%; /* Ocupa a largura total do contêiner */
+        }
 
-#texto-convite {
-    font-family: 'MedievalSharp', cursive; 
-    font-size: 0.97rem;                     
-    line-height: 1.45;                      
-    text-align: left;
-    white-space: pre-wrap;                 
-    margin-bottom: 0; /* Removido margin-bottom pois não há botão abaixo */                  
-    color: #1F1208;                        
-    text-shadow: 0.5px 0.5px 1px rgba(230, 210, 190, 0.2); 
-    padding: 0 5px;
-}
+        .invite-text p {
+            margin-bottom: 1rem;
+        }
 
-#texto-convite strong {
-    font-family: 'Cinzel', serif; 
-    font-size: 1.0rem;    
-    color: #402E1F;              
-    font-weight: 700;
-}
+        /* Efeito de máquina de escrever */
+        .typewriter-text {
+            overflow: hidden; /* Garante que o texto não apareça todo de uma vez */
+            white-space: pre-wrap; /* Preserva quebras de linha e espaços */
+            margin: 0 auto;
+            letter-spacing: 0.05em; /* Espaçamento entre letras para o efeito */
+            animation: typing 0s steps(100, end) forwards; /* A animação é controlada por JS */
+            display: inline-block; /* Permite que o texto se ajuste ao conteúdo */
+        }
 
-/* Removi as classes de botão e mensagem de confirmação pois você retirou o botão */
+        /* Cursor piscando para o efeito de máquina de escrever */
+        .typewriter-text::after {
+            content: '|';
+            display: inline-block;
+            animation: blink-caret 0.75s step-end infinite;
+        }
 
-.escondido {
-    display: none !important;
-    opacity: 0;
-}
+        /* Animação do cursor piscando */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #4a2c0a; }
+        }
 
-.visivel { /* Esta classe é adicionada pelo JS */
-    display: flex !important; /* Garante que sobrescreva display:none e mantenha flex */
-    opacity: 1 !important;
-    transform: scale(1) !important;
-}
+        /* Estilo para os ícones mágicos */
+        .magic-icon {
+            display: inline-block;
+            margin-right: 5px; /* Espaçamento à direita do ícone */
+            font-size: 1.2em; /* Tamanho do ícone */
+            vertical-align: middle;
+        }
 
-
-#coruja-animacao {
-    position: absolute;
-    width: 100px;
-    max-width: 30vw;
-    bottom: -20px; /* Posição relativa à #carta-container */
-    left: 50%;
-    transform: translateX(-50%) translateY(50px);
-    opacity: 0;
-    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-    z-index: 10;
-}
-
-#coruja-animacao.pousar {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-#carta-container.fechando #carta-aberta {
-    opacity: 0;
-    transform: scale(0.8) rotate(5deg);
-    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-}
-
-
-/* --- Responsividade --- */
-@media (max-width: 768px) {
-     #carta-fechada {
-        width: 200px; /* Ajuste se necessário */
-    }
-    #instrucao-abrir {
-        font-size: 1.1rem;
-    } 
-    #carta-aberta {
-       width: 90vw;       
-        max-width: 95%;     
-        height: auto;       
-        min-height: 80vh;   
-        max-height: 90vh;   
-
-        /* PADDINGS LATERAIS REDUZIDOS */
-        padding: 30px 20px 20px 20px; /* top, SIDES, bottom */
-    }
-    #brasao-hogwarts {
-        width: 70px;
-        margin-bottom: 10px;
-    }
-    #texto-convite-container {
-        /* Ex: 40(padT) + 60(bras) + 8(mBras) + 5(mCont) + 25(padB) = 138px */
-        max-height: calc(100% - (30px + 70px + 10px + 20px));
-        padding-right: 6px; /* Espaço para scrollbar */
-        padding-left: 3px;
-    }
-    #texto-convite {
-        font-size: 0.9rem; /* Ajustado */
-        line-height: 1.5;  /* Ajustado */
-    }
-}
-
-@media (max-width: 480px) { 
-    #carta-fechada {
-        width: 150px; /* Ajuste se necessário */
-    }
-    #instrucao-abrir {
-        font-size: 0.95rem;
-    }
-    #carta-aberta {
-       width: 95vw;        /* Ocupa quase toda a largura */
-        max-width: 100%;    /* Não pode ser mais larga que a tela */
-        box-sizing: border-box; /* Crucial se width é perto de 100% e há padding */
-        
-        min-height: 75vh;   /* Tentar dar o máximo de altura */
-        max-height: 85vh;   /* Quase toda a altura da tela */
-        height: auto;       
-
-        /* PADDINGS LATERAIS MUITO PEQUENOS */
-        padding: 25px 15px 15px 15px; /* top, SIDES (5px), bottom */
-    }
-    #brasao-hogwarts { 
-        width: 50px;
-        margin-bottom: 8px;
-    }
-    #texto-convite-container {
-     max-height: calc(100% - (25px + 50px + 8px + 15px));
-        padding-right: 4px; /* Espaço mínimo para scrollbar, se houver */
-        padding-left: 2px;
-        margin-top: 2px;
-        overflow-y: auto; /* Manter caso o texto ainda seja muito longo */
-    }
-    #texto-convite {
-        font-size: 0.85rem; 
-        line-height: 1.6;
-    }
-    #coruja-animacao {
-        width: 80px;
-    }
-}
-
-@media (max-height: 500px) and (orientation: landscape) {
-     #carta-aberta {
-      width: 85vw; /* Em landscape, a largura pode ser maior */
-        max-width: 450px; /* Limite para não ficar excessiva */
-        min-height: auto; 
-        max-height: 90vh; /* Quase toda a altura */
-        padding: 15px 20px 10px 20px; /* Menos padding vertical, laterais podem ser um pouco maiores */
-    }
-    #brasao-hogwarts {
-        width: 40px; 
-        margin-bottom: 5px;
-    }
-    #texto-convite-container {
-        /* Ex: 15(padT) + 30(bras) + 3(mBras) + 0(mCont) + 10(padB) = 58px */
-       max-height: calc(100% - (15px + 40px + 5px + 10px)); 
-        margin-top: 3px;
-        padding-right: 2px;
-    }
-    #texto-convite {
-        font-size: 0.75rem;
-        line-height: 1.3;
-    }
-    #instrucao-abrir {
-        font-size: 0.9rem;
-    }
-}
+        /* Estilo para o rodapé do convite */
+        .invite-footer {
+            margin-top: 2rem;
+            font-style: italic;
+            color: #8b4513;
+        }

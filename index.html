@@ -8,26 +8,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container-magico">
-        <div id="tela-inicial">
-            <img src="assets/carta-fechada-selo.png" alt="Carta de Hogwarts Fechada" id="carta-fechada">
-            <p id="instrucao-abrir">Toque para abrir</p>
+<div class="invite-container">
+        <!-- Tela inicial com a carta fechada -->
+        <div id="initialScreen" class="initial-screen">
+            <img id="closedLetter" src="assets/carta-fechada-selo.png" alt="Carta Fechada" class="closed-letter">
+            <!-- Selo de Hogwarts ou Ministério da Magia -->
+            <img src="assets/selo-magico.png" alt="Selo Mágico" class="letter-seal">
+            <button id="tapToOpenButton" class="tap-to-open-button">TOQUE PARA ABRIR</button>
         </div>
 
-        <div id="carta-container" class="escondido">
-            <div id="carta-aberta">
-                <img src="assets/brasao-hogwarts.png" alt="Brasão de Hogwarts" id="brasao-hogwarts">
-                <div id="texto-convite-container">
-                    <p id="texto-convite"></p>
-                </div>
-                 </div>
-            <img src="assets/coruja.png" alt="Coruja" id="coruja-animacao" class="escondido">
+        <!-- Conteúdo da carta aberta (inicialmente oculto) -->
+        <div id="openLetterContent" class="open-letter-content">
+            <!-- Brasão no topo da carta aberta -->
+            <img src="assets/brasao-hogwarts.png" alt="Brasão Mágico" class="open-letter-crest">
+            <h1 class="invite-title">Convite Mágico de Aniversário!</h1>
+            <div class="invite-text">
+                <p class="typewriter-text" id="inviteText"></p>
+            </div>
+            <div class="invite-footer">
+                Esperamos por você para celebrar a magia!
+            </div>
         </div>
-        
 
-        <audio id="musica-fundo" src="assets/musica-magica.mp3" loop></audio>
+        <!-- Elemento de áudio (inicialmente pausado) -->
+        <audio id="backgroundMusic" loop>
+            <!-- Substitua 'musica-magica.mp3' pelo caminho real do seu arquivo de áudio -->
+            <source src="assets/musica-magica.mp3" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio.
+        </audio>
     </div>
 
+   
     <script src="script.js"></script>
 </body>
 </html>

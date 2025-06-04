@@ -1,169 +1,80 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const telaInicial = document.getElementById('tela-inicial');
-    // const cartaFechada = document.getElementById('carta-fechada'); // Não usado diretamente em funções
-    const instrucaoAbrir = document.getElementById('instrucao-abrir');
+ // Seleciona os elementos do DOM
+        const initialScreen = document.getElementById('initialScreen');
+        const closedLetter = document.getElementById('closedLetter');
+        const tapToOpenButton = document.getElementById('tapToOpenButton');
+        const openLetterContent = document.getElementById('openLetterContent');
+        const inviteTextElement = document.getElementById('inviteText');
+        const backgroundMusic = document.getElementById('backgroundMusic');
 
-    const cartaContainer = document.getElementById('carta-container');
-    const cartaAberta = document.getElementById('carta-aberta');
-    const textoConviteEl = document.getElementById('texto-convite');
-    const musicaFundo = document.getElementById('musica-fundo');
-    const corujaAnimacao = document.getElementById('coruja-animacao');
-    // --- NOVO TEXTO DO CONVITE ---
-    const textoCompleto = `Prezado(a) bruxinho(a),\n\nRecebemos informações ultra-secretas (vazadas por um elfo fofoqueiro) de que no dia 19 de junho, uma bruxinha poderosa chamada Lunna vai completar mais um ciclo encantado! 🪄🎂\n\nE como manda a tradição da magia... vai ter: bolinho que desaparece, docinho que hipnotiza, sorrisos que brilham no escuro e amigos mágicos reunidos pra celebrar!\n\n📅 Data encantada: 19/06 (quinta-feira)\n⏰ Horário do feitiço: 18h, sem atraso ou vira sapo!\n📍 Local encantado: No Refúgio Secreto da Lunna. \n\nMas calma, nada de dragões, vassouras desgovernadas ou aulas de poções! É só um bolinho mesmo, daqueles que somem rapidinho quando a gente diz "Aparecium Brigadeirus!" 🍰✨`;
- let timeoutFecharCarta;
-    const tempoParaFecharCartaAberta = 15000; // 15 segundos após o texto terminar de ser escrito. AJUSTE SE NECESSÁRIO.
+        // Texto completo do convite
+        const fullInviteText = `Prezado(a) bruxinho(a),
 
-    function efeitoMaquinaDeEscrever(texto, elemento, callback) {
-        let i = 0;
-        elemento.innerHTML = ''; // Limpa o conteúdo anterior
-        function escrever() {
-            if (i < texto.length) {
-                // Para interpretar tags HTML como <strong> no meio do texto
-                if (texto.substring(i).startsWith("<strong>")) {
-                    let endTagIndex = texto.indexOf("</strong>", i);
-                    if (endTagIndex === -1) { // Caso não encontre a tag de fechamento
-                        elemento.innerHTML += texto.charAt(i); // Escreve como texto normal
-                        i++;
-                    } else {
-                        elemento.innerHTML += texto.substring(i, endTagIndex + 9);
-                        i = endTagIndex + 9;
-                    }
-                } else {
-                    elemento.innerHTML += texto.charAt(i);
-                    i++;
-                }
-                setTimeout(escrever, 35); // Ajuste a velocidade aqui (ms)
-            } else if (callback) {
-                callback(); // Chama o callback quando o texto termina
-            }
-        }
-        escrever();
-    }
+Recebemos informações ultra-secretas (vazadas por um elfo fofoqueiro) de que no dia 19 de junho, uma bruxinha poderosa chamada Lunna vai completar mais um ciclo encantado! 🪄🎂
 
-    function fecharCartaEMostrarCoruja() {
-        console.log("Iniciando fecharCartaEMostrarCoruja..."); // Log para depuração
+E como manda a tradição da magia... vai ter:
+✨ Bolinho que desaparece
+✨ Docinho que hipnotiza
+✨ Sorrisos que brilham no escuro
+✨ E amigos mágicos reunidos pra celebrar!
 
-        // Para a música com fade out
-        if (musicaFundo && !musicaFundo.paused) {
-            let volume = musicaFundo.volume;
-            const fadeOutInterval = setInterval(() => {
-                volume -= 0.1;
-                if (volume < 0.1) { // Deixar um mínimo para não estourar
-                    volume = 0;
-                }
-                musicaFundo.volume = volume;
-                if (musicaFundo.volume <= 0) {
-                    musicaFundo.pause();
-                    musicaFundo.currentTime = 0;
-                    musicaFundo.volume = 1; // Restaurar volume para a próxima vez
-                    clearInterval(fadeOutInterval);
-                    console.log("Música parada.");
-                }
-            }, 100);
-        } else {
-            console.log("Música não estava tocando ou elemento não encontrado.");
-        }
+📅 Data encantada: 19/06 (quarta-feira)
+⏰ Horário do feitiço: 18h, sem atraso ou vira sapo!
+📍 Lugar secreto (mas nem tanto): Rua 13 Polar, nº71 – Vila Velha
 
-        // Adiciona classe para animar o fechamento da carta aberta
-        if (cartaContainer) {
-            cartaContainer.classList.add('fechando');
-        } else {
-            console.error("Elemento #carta-container não encontrado para fechar.");
-            return; // Sai da função se o container não existe
-        }
-        
-        setTimeout(() => {
-            console.log("Timeout interno de fecharCartaEMostrarCoruja: Escondendo carta aberta, mostrando inicial e coruja.");
-            if (cartaAberta) {
-                cartaAberta.style.opacity = '0';
-                cartaAberta.style.transform = 'scale(0.8)';
-            }
-            if (cartaContainer) {
-                cartaContainer.classList.remove('visivel');
-                cartaContainer.classList.add('escondido');
-                cartaContainer.classList.remove('fechando'); // Limpa a classe de animação
-            }
-            
-            if (telaInicial) {
-                telaInicial.classList.remove('escondido');
-                void telaInicial.offsetWidth; // Forçar reflow
-                telaInicial.style.opacity = '1';
-                telaInicial.style.transform = 'scale(1)';
-            }
-            if (instrucaoAbrir) { // Garantir que a instrução de abrir não reapareça
-                instrucaoAbrir.classList.add('escondido');
-            }
+Mas calma, nada de dragões, vassouras desgovernadas ou aulas de poções!
+É só um bolinho mesmo — daquele que some rapidinho quando a gente diz "Aparecium Brigadeirus!" 🍰✨
+`;
 
-            if (corujaAnimacao) {
-                corujaAnimacao.classList.remove('escondido');
-                void corujaAnimacao.offsetWidth; // Forçar reflow
-                corujaAnimacao.classList.add('pousar');
-                console.log("Coruja animada.");
+        // Função para simular o efeito de máquina de escrever
+        let charIndex = 0;
+        function typeWriter() {
+            if (charIndex < fullInviteText.length) {
+                inviteTextElement.textContent += fullInviteText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 35); // Ajuste a velocidade da digitação aqui (em milissegundos)
             } else {
-                console.error("Elemento #coruja-animacao não encontrado.");
+                // Remove o cursor piscando após a digitação completa
+                inviteTextElement.classList.remove('typewriter-text');
             }
-
-        }, 700); // Duração da animação de fechar (deve corresponder ao CSS transition)
-    }
-
-    function abrirCarta() {
-        console.log("Abrindo carta...");
-        if (!telaInicial || !instrucaoAbrir || !cartaContainer || !cartaAberta || !musicaFundo || !textoConviteEl) {
-            console.error("Um ou mais elementos essenciais não foram encontrados no DOM para abrirCarta.");
-            return; // Impede a execução se elementos cruciais faltarem
         }
 
-        telaInicial.style.opacity = '0';
-        telaInicial.style.transform = 'scale(0.5)';
+        // Função para abrir a carta
+        function openLetter() {
+            // Efeito de fade out e scale para a tela inicial
+            initialScreen.style.opacity = '0';
+            initialScreen.style.transform = 'scale(0.8)';
 
-        setTimeout(() => {
-            telaInicial.classList.add('escondido');
-            instrucaoAbrir.classList.add('escondido');
+            // Após a transição, esconde a tela inicial e mostra o conteúdo da carta aberta
+            setTimeout(() => {
+                initialScreen.style.display = 'none';
+                openLetterContent.style.display = 'flex'; // Altera para flex para centralizar o conteúdo
+                // Efeito de fade in e scale para a carta aberta
+                openLetterContent.style.opacity = '1';
+                openLetterContent.style.transform = 'scale(1)';
 
-            cartaContainer.classList.remove('escondido');
-            // Forçar reflow para garantir que a transição de entrada do container funcione
-            void cartaContainer.offsetWidth; 
-            cartaContainer.classList.add('visivel');
-            
-            // Forçar reflow para garantir que a transição de entrada da carta aberta funcione
-            void cartaAberta.offsetWidth; 
-            cartaAberta.style.opacity = '1';
-            cartaAberta.style.transform = 'scale(1)';
+                // Inicia a música de fundo
+                backgroundMusic.play().catch(e => console.error("Erro ao tocar a música:", e));
 
-            musicaFundo.play().catch(error => {
-                console.log("Autoplay da música foi bloqueado:", error);
-                // Opcional: Mostrar um botão "Tocar Música" se bloqueado
-            });
+                // Inicia o efeito de máquina de escrever
+                typeWriter();
+            }, 1000); // Tempo correspondente à duração da transição CSS
+        }
 
-            // O callback aqui agendará o fechamento da carta
-            efeitoMaquinaDeEscrever(textoCompleto, textoConviteEl, () => {
-                console.log("Texto terminou de ser escrito. Agendando fechamento da carta em " + tempoParaFecharCartaAberta + "ms.");
-                clearTimeout(timeoutFecharCarta); // Limpa qualquer timeout anterior (segurança)
-                timeoutFecharCarta = setTimeout(fecharCartaEMostrarCoruja, tempoParaFecharCartaAberta);
-            });
+        // Adiciona o evento de clique à carta e ao botão
+        closedLetter.addEventListener('click', openLetter);
+        tapToOpenButton.addEventListener('click', openLetter);
 
-        }, 500); // Tempo da animação de fade out da carta fechada
-    }
+        // Garante que o conteúdo da carta aberta esteja oculto ao carregar
+        openLetterContent.style.display = 'none';
 
+        // Placeholder para as imagens:
+        // A imagem do selo (letter-seal), da carta fechada (closed-letter) e do brasão (open-letter-crest) são placeholders.
+        // Você deve substituí-las por imagens reais de Hogwarts ou Ministério da Magia.
+        // Exemplo:
+        // closedLetter.src = 'caminho/para/sua/carta-fechada.png';
+        // document.querySelector('.letter-seal').src = 'caminho/para/seu/selo.png';
+        // document.querySelector('.open-letter-crest').src = 'caminho/para/seu/brasao.png';
 
-    // Event listener para clicar na carta fechada
-    if (telaInicial) {
-        telaInicial.addEventListener('click', abrirCarta);
-    } else {
-        console.error("Elemento #tela-inicial não encontrado para adicionar event listener.");
-    }
-
-    // Opcional: se o usuário clicar na carta aberta, cancelar o fechamento automático
-    // Isso permite que ele leia por mais tempo se quiser.
-    if (cartaAberta) {
-        cartaAberta.addEventListener('click', () => {
-            if (timeoutFecharCarta) {
-                clearTimeout(timeoutFecharCarta);
-                console.log("Fechamento automático da carta CANCELADO pelo clique do usuário.");
-                // Você pode optar por reagendar com um tempo maior aqui se desejar,
-                // ou simplesmente deixar que não feche mais automaticamente.
-                // Exemplo: timeoutFecharCarta = setTimeout(fecharCartaEMostrarCoruja, tempoParaFecharCartaAberta * 2);
-            }
-        });
-    }
-});
+        // A música de fundo também é um placeholder.
+        // Substitua 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+        // pelo caminho real do seu arquivo 'musica-magica.mp3'.
