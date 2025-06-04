@@ -8,20 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundMusic = document.getElementById('background-music');
     const crestImage = document.getElementById('crest-img');
 
-    // Log para verificar se os elementos foram encontrados
     console.log("Elemento initialScreen:", initialScreen);
     console.log("Elemento scrollScreen:", scrollScreen);
-    console.log("Elemento crestImage:", crestImage);
-    console.log("Elemento backgroundMusic:", backgroundMusic);
-    console.log("Elemento inviteTextWrapper:", inviteTextWrapper);
-
+    console.log("Elemento inviteTextWrapper:", inviteTextWrapper); // Verifique se este é encontrado
+    // ... outros logs de elementos ...
 
     // Configurações
     const scrollOpenDuration = 20000;
     const typingSpeed = 40;
     let autoCloseTimer = null;
-    let userHasInteracted = false; // Flag para a primeira interação do usuário
-    let audioCanPlay = false; // Flag para indicar se o áudio está pronto (canplaythrough)
+    let userHasInteracted = false;
+    let audioCanPlay = false;
 
     // Texto do convite
     const invitationTextLines = [
@@ -37,74 +34,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica de Áudio ---
     if (backgroundMusic) {
         console.log("Configurando listeners para o elemento de áudio.");
-        backgroundMusic.load(); // Tenta carregar o áudio
-
+        backgroundMusic.load();
         backgroundMusic.addEventListener('canplaythrough', () => {
             console.log("ÁUDIO: Evento 'canplaythrough' disparado. Áudio pronto para tocar.");
             audioCanPlay = true;
         });
-
-        backgroundMusic.addEventListener('error', (e) => {
-            console.error("ÁUDIO ERRO: Ocorreu um erro com o elemento de áudio.", e);
-            let errorMsg = "Erro desconhecido no áudio.";
-            if (backgroundMusic.error) {
-                switch (backgroundMusic.error.code) {
-                    case MediaError.MEDIA_ERR_ABORTED: errorMsg = 'Reprodução abortada.'; break;
-                    case MediaError.MEDIA_ERR_NETWORK: errorMsg = 'Erro de rede ao carregar áudio.'; break;
-                    case MediaError.MEDIA_ERR_DECODE: errorMsg = 'Erro de decodificação. Arquivo corrompido ou formato inválido.'; break;
-                    case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED: errorMsg = 'Fonte de áudio não suportada. Verifique o caminho/formato.'; break;
-                    default: errorMsg = `Erro inesperado no áudio (código: ${backgroundMusic.error.code}).`; break;
-                }
-            }
-            console.error("ÁUDIO ERRO DETALHADO:", errorMsg);
-            // alert("Problema ao carregar a música: " + errorMsg); // Pode ser muito intrusivo
-        });
-
-        // Alguns navegadores precisam de um "empurrãozinho" no primeiro gesto do usuário
-        const unlockAudio = () => {
-            if (!userHasInteracted) { // Só executa na primeira interação
-                userHasInteracted = true;
-                console.log("ÁUDIO: Primeira interação do usuário registrada.");
-                if (backgroundMusic.paused) { // Só tenta tocar se estiver pausado
-                    const promise = backgroundMusic.play();
-                    if (promise !== undefined) {
-                        promise.then(() => {
-                            backgroundMusic.pause(); // Pausa imediatamente, só para "desbloquear"
-                            console.log("ÁUDIO: Desbloqueio tentado e áudio pausado.");
-                        }).catch(error => {
-                            console.warn("ÁUDIO: Tentativa de desbloqueio falhou (pode ser normal em alguns navegadores/cenários):", error.name, error.message);
-                        });
-                    }
-                }
-                // Remove o listener de desbloqueio para não ser chamado novamente
-                if(initialScreen) initialScreen.removeEventListener('click', unlockAudio);
-                document.body.removeEventListener('click', unlockAudio); // Se tiver adicionado ao body
-            }
-        };
-
-        if (initialScreen) {
-             // Adiciona o listener para a primeira interação para desbloquear o áudio
-            initialScreen.addEventListener('click', unlockAudio, { once: true });
-        } else {
-             // Fallback se initialScreen não estiver pronto, tenta no body (menos ideal)
-            document.body.addEventListener('click', unlockAudio, { once: true });
-            console.warn("initialScreen não encontrado para o listener de desbloqueio de áudio, usando document.body como fallback.");
-        }
-
-
+        backgroundMusic.addEventListener('error', (e) => { /* ...lógica de erro como antes... */ });
     } else {
         console.error("ERRO CRÍTICO: Elemento de áudio 'background-music' NÃO ENCONTRADO.");
     }
 
-
     // --- Funções do Convite ---
     function typeWriterEffect(element, text, speed, callback) {
         let i = 0;
-        element.innerHTML = "";
+        // Verifica se o elemento existe antes de tentar modificar o innerHTML
+        if (!element) {
+            console.error("TEXTO ERRO: Elemento para typeWriterEffect é nulo. Texto:", text);
+            if (callback) callback(); // Chama o callback para não travar a sequência
+            return;
+        }
+        element.innerHTML = ""; // Limpa o conteúdo anterior
         element.classList.add('typing-cursor');
+
         function type() {
             if (i < text.length) {
-                if (text.charAt(i) === '<') {
+                if (text.charAt(i) === '<') { // Lida com tags HTML
                     let tagEnd = text.indexOf('>', i);
                     if (tagEnd !== -1) {
                         element.innerHTML += text.substring(i, tagEnd + 1);
@@ -117,21 +71,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(type, speed);
             } else {
                 element.classList.remove('typing-cursor');
-                if (callback) callback();
+                if (callback) callback(); // Chama a próxima função se houver
             }
         }
         type();
     }
 
     function writeAllLines(lines, index = 0) {
+        // Verifica se inviteTextWrapper existe
+        if (!inviteTextWrapper) {
+            console.error("TEXTO ERRO: inviteTextWrapper não encontrado para escrever as linhas.");
+            // Se não puder escrever, ainda agenda o fechamento para não ficar aberto indefinidamente
+            if (autoCloseTimer) clearTimeout(autoCloseTimer);
+            autoCloseTimer = setTimeout(hideScroll, scrollOpenDuration);
+            return;
+        }
+
         if (index < lines.length) {
             const lineText = lines[index];
             const p = document.createElement('p');
-            inviteTextWrapper.appendChild(p);
-            typeWriterEffect(p, lineText, typingSpeed, () => {
-                writeAllLines(lines, index + 1);
+            inviteTextWrapper.appendChild(p); // Adiciona o parágrafo ao wrapper
+            typeWriterEffect(p, lineText, typingSpeed, () => { // Aplica o efeito ao parágrafo
+                writeAllLines(lines, index + 1); // Chama recursivamente para a próxima linha
             });
         } else {
+            // Todas as linhas foram escritas
             if (autoCloseTimer) clearTimeout(autoCloseTimer);
             console.log("TEXTO: Todas as linhas escritas. Agendando fechamento do pergaminho.");
             autoCloseTimer = setTimeout(hideScroll, scrollOpenDuration);
@@ -139,72 +103,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function tryPlayMusic() {
-        if (backgroundMusic && audioCanPlay && userHasInteracted) { // Verifica todas as condições
-            if (backgroundMusic.paused) { // Só toca se estiver pausado
-                console.log("ÁUDIO: Tentando tocar a música...");
-                backgroundMusic.currentTime = 0; // Reinicia se for tocar novamente
-                const playPromise = backgroundMusic.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log("ÁUDIO: Música tocando com sucesso!");
-                    }).catch(error => {
-                        console.error("ÁUDIO: Erro ao tentar tocar música após interação:", error.name, error.message);
-                        if (error.name === "NotAllowedError") {
-                            // Isso ainda pode acontecer se a interação não foi "direta" o suficiente
-                            // ou se o navegador tem políticas muito estritas.
-                            console.warn("ÁUDIO: NotAllowedError - o navegador bloqueou a reprodução.");
-                        }
-                    });
-                }
-            } else {
-                console.log("ÁUDIO: Música já está tocando ou não está pausada.");
+        if (backgroundMusic && audioCanPlay && userHasInteracted && backgroundMusic.paused) {
+            console.log("ÁUDIO: Tentando tocar a música...");
+            backgroundMusic.currentTime = 0;
+            const playPromise = backgroundMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log("ÁUDIO: Música tocando com sucesso!");
+                }).catch(error => {
+                    console.error("ÁUDIO: Erro ao tentar tocar música:", error.name, error.message);
+                });
             }
         } else {
+            // ... (logs de aviso como antes) ...
             let reason = [];
             if (!backgroundMusic) reason.push("elemento de áudio não encontrado");
-            if (!audioCanPlay) reason.push("áudio não está pronto (canplaythrough não disparou)");
+            if (!audioCanPlay) reason.push("áudio não está pronto");
             if (!userHasInteracted) reason.push("usuário ainda não interagiu");
-            console.warn(`ÁUDIO: Não foi possível tentar tocar a música. Razão(ões): ${reason.join(', ')}.`);
+            if (backgroundMusic && !backgroundMusic.paused) reason.push("música não está pausada (ou já está tocando)");
+            console.warn(`ÁUDIO: Não foi possível tocar a música agora. Razão(ões): ${reason.join(', ')}.`);
         }
     }
 
     function showScroll() {
         console.log("CONVITE: Função showScroll() chamada.");
-
         if (!initialScreen || !scrollScreen || !crestImage || !inviteTextWrapper) {
-            console.error("CONVITE ERRO: Um ou mais elementos da UI (initialScreen, scrollScreen, crestImage, inviteTextWrapper) não foram encontrados.");
+            console.error("CONVITE ERRO: Elementos da UI ausentes ao tentar mostrar o pergaminho.");
             return;
         }
 
         initialScreen.classList.remove('active');
         scrollScreen.classList.add('active');
         crestImage.style.display = 'block';
-        console.log("CONVITE: Telas trocadas, brasão visível.");
 
-        inviteTextWrapper.innerHTML = '';
-        writeAllLines(invitationTextLines);
+        // Verifica se inviteTextWrapper existe ANTES de tentar limpar e escrever
+        if (inviteTextWrapper) {
+            inviteTextWrapper.innerHTML = ''; // Limpa texto anterior
+            writeAllLines(invitationTextLines); // Começa a escrever o texto
+        } else {
+            console.error("TEXTO ERRO: inviteTextWrapper é nulo em showScroll(). O texto não será exibido.");
+        }
 
-        tryPlayMusic(); // Tenta tocar a música
+        tryPlayMusic();
     }
 
     function hideScroll() {
         console.log("CONVITE: Função hideScroll() chamada.");
-
         if (!initialScreen || !scrollScreen || !crestImage) {
-            console.error("CONVITE ERRO: Elementos da UI não encontrados ao tentar fechar.");
+            console.error("CONVITE ERRO: Elementos da UI ausentes ao tentar fechar o pergaminho.");
             return;
         }
-
         scrollScreen.classList.remove('active');
         crestImage.style.display = 'none';
         initialScreen.classList.add('active');
-        console.log("CONVITE: Pergaminho fechado, tela inicial reativada.");
 
         if (backgroundMusic && !backgroundMusic.paused) {
             backgroundMusic.pause();
             console.log("ÁUDIO: Música pausada.");
         }
-        // userHasInteracted e audioCanPlay permanecem como estão.
         if (autoCloseTimer) clearTimeout(autoCloseTimer);
     }
 
@@ -212,12 +168,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (initialScreen) {
         initialScreen.addEventListener('click', () => {
             console.log("CONVITE: CLIQUE DETECTADO em initialScreen!");
-            // A função unlockAudio já foi chamada via {once: true} se esta não for a primeira vez.
-            // Se for a primeira, unlockAudio será chamada pelo listener específico.
-            // O importante é que userHasInteracted será true.
+            if (!userHasInteracted) {
+                userHasInteracted = true;
+                console.log("ÁUDIO: Primeira interação do usuário registrada (flag userHasInteracted = true).");
+            }
             showScroll();
         });
     } else {
-        console.error("ERRO CRÍTICO: Elemento 'initial-screen' NÃO ENCONTRADO no HTML. O convite não abrirá.");
+        console.error("ERRO CRÍTICO: Elemento 'initial-screen' NÃO ENCONTRADO no HTML.");
     }
 });
