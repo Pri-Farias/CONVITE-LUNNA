@@ -79,7 +79,7 @@ html, body {
     background-size: 100% 100%;
     background-repeat: no-repeat;
     /* Padding: TOP AUMENTADO, LATERAIS, BOTTOM. */
-    padding: 60px 35px 30px 25px; /* Ex: Topo:60px, Laterais:35px, Fundo:30px */
+    padding: 45px 35px 30px 35px; /* Ex: Topo:60px, Laterais:35px, Fundo:30px */
     border-radius: 5px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
     overflow: hidden;
@@ -128,7 +128,7 @@ html, body {
     }
     .parchment {
         /* Ajustar padding-top também para telas menores */
-        padding: 25px 30px 15px 30px;
+        padding: 45px 30px 15px 20px;
     }
     #parchment-crest {
         width: 55px;
