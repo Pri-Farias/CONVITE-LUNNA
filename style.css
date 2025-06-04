@@ -23,7 +23,7 @@ html, body {
     background-size: cover;
     background-position: center;
     position: relative;
-    padding: 15px; /* Um pouco de espaço nas bordas */
+    padding: 10px; /* Um pouco de espaço nas bordas */
 }
 
 #initial-screen {
@@ -57,10 +57,6 @@ html, body {
 /* ... (código anterior não relevante para esta seção) ... */
 
 #open-letter-screen {
-    width: 90%;
-    max-width: 400px;
-    height: 93vh; /* AUMENTADO para dar mais altura geral */
-    max-height: 720px; /* AUMENTADO o limite máximo de altura */
     position: relative;
     transform: scale(0.1) rotate(-15deg);
     opacity: 0;
@@ -73,13 +69,10 @@ html, body {
 }
 
 .parchment {
-    width: 100%;
-    height: 100%;
     background-image: url('assets/carta-aberta-fundo.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     /* Padding: TOP AUMENTADO, LATERAIS, BOTTOM. */
-    padding: 45px 35px 30px 35px; /* Ex: Topo:60px, Laterais:35px, Fundo:30px */
     border-radius: 5px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
     overflow: hidden;
@@ -88,8 +81,6 @@ html, body {
 }
 
 #parchment-crest {
-    width: 60px;
-    max-width: 25%;
     height: auto;
     margin: 0 auto 15px auto; /* Margem superior agora é controlada pelo padding do .parchment */
     display: block;
@@ -118,28 +109,63 @@ html, body {
     margin: 8px 0 12px 0;
 }
 
-/* Media query para telas menores */
-@media (max-width: 390px) {
+@media (max-width: 600px) {
     #open-letter-screen {
-        width: 92%;
-        max-width: 380px;
-        height: 90vh; /* Manter uma boa altura relativa */
-        max-height: 700px;
+        width: 92%; /* Mais largo no celular */
+        max-width: 420px; /* Um limite para celulares maiores */
+        height: 90vh; /* Usar bastante da altura da tela */
+        max-height: none; /* Sem limite máximo de altura explícito, deixa o vh controlar */
     }
+
     .parchment {
-        /* Ajustar padding-top também para telas menores */
-        padding: 60px 35px 30px 35px;
+        width: 100%;
+        height: 100%;
+        padding: 25px 30px 20px 30px; /* Padding: Topo, Laterais AUMENTADAS, Fundo */
     }
+
     #parchment-crest {
-        width: 55px;
-        margin-bottom: 12px;
+        width: 55px; /* Tamanho menor para celular */
+        margin-bottom: 12px; /* Espaço abaixo do brasão */
     }
+
     #letter-content {
-        font-size: clamp(10.2px, 2.75vw, 13.2px);
-        line-height: 1.4;
+        font-size: clamp(11.5px, 3.8vw, 14.5px); /* Fonte um pouco maior e mais responsiva para celular */
+        line-height: 1.48; /* Aumentar um pouco para legibilidade e preenchimento */
     }
+
     .guest-name {
-        font-size: 1.5em;
-        margin: 6px 0 10px 0;
+        font-size: 1.7em; /* Maior no celular */
+        margin: 10px 0 15px 0; /* Mais espaçamento vertical */
+    }
+}
+
+/* === ESTILOS PARA TELAS MAIORES (TABLET/DESKTOP - acima de 600px) === */
+@media (min-width: 601px) {
+    #open-letter-screen {
+        width: 70%; /* Pode ser mais estreito em relação à tela */
+        max-width: 500px; /* Limite de largura para não ficar gigante */
+        height: 85vh; /* Um pouco menos de altura relativa */
+        max-height: 750px; /* Limite de altura */
+    }
+
+    .parchment {
+        width: 100%;
+        height: 100%;
+        padding: 35px 45px 30px 45px; /* Padding: Topo MAIOR, Laterais MAIORES, Fundo MAIOR */
+    }
+
+    #parchment-crest {
+        width: 70px; /* Maior em telas grandes */
+        margin-bottom: 20px;
+    }
+
+    #letter-content {
+        font-size: clamp(14px, 2.2vw, 17px); /* Fonte base maior, vw menor impacto */
+        line-height: 1.55;
+    }
+
+    .guest-name {
+        font-size: 2em; /* Nome bem destacado */
+        margin: 15px 0 20px 0;
     }
 }
