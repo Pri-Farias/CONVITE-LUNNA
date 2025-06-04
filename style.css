@@ -113,14 +113,14 @@ html, body {
     #open-letter-screen {
         width: 92%; /* Mais largo no celular */
         max-width: 420px; /* Um limite para celulares maiores */
-        height: 90vh; /* Usar bastante da altura da tela */
+        height: 150vh; /* Usar bastante da altura da tela */
         max-height: none; /* Sem limite máximo de altura explícito, deixa o vh controlar */
     }
 
     .parchment {
         width: 100%;
         height: 100%;
-        padding: 45px 30px 45px 65px; /* Padding: Topo, Laterais AUMENTADAS, Fundo */
+         padding: 30px 20px 30px 20px;  /* Padding: Topo, Laterais AUMENTADAS, Fundo */
     }
 
     #parchment-crest {
