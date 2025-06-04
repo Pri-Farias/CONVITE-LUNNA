@@ -111,8 +111,10 @@ html, body {
 
 @media (max-width: 600px) {
     #open-letter-screen {
-        width: 92%; /* Mais largo no celular */
+        width: 98%; /* Mais largo no celular */
         max-width: 420px; /* Um limite para celulares maiores */
+        margin: 0 auto; /* Centralizar na tela */
+        padding: 16px;
         height: 150vh; /* Usar bastante da altura da tela */
         max-height: none; /* Sem limite máximo de altura explícito, deixa o vh controlar */
     }
