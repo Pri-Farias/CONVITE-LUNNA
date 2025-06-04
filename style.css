@@ -1,172 +1,134 @@
-body {
-            font-family: 'MedievalSharp', cursive;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Evita rolagem indesejada */
-            background-color: #0d1117; /* Fundo escuro estilo universo */
-        }
+/* Importações de fontes do Google Fonts (se não linkou no HTML) */
+/* @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Cinzel+Decorative:wght@400;700&display=swap'); */
 
-        /* Estilo para o contêiner principal do convite */
-        .invite-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* Ocupa a altura total da viewport */
-            width: 100vw; /* Ocupa a largura total da viewport */
-            background: linear-gradient(180deg, #0a0a1a 0%, #2c0a3a 100%); /* Gradiente de fundo estilo universo */
-            position: relative;
-            overflow: hidden;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        /* Estilo para a tela inicial com a carta fechada */
-        .initial-screen {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transition: opacity 1s ease-out, transform 1s ease-out; /* Transição suave para o efeito mágico */
-        }
+html, body {
+    height: 100%;
+    font-family: 'Merriweather', serif;
+    overflow: hidden; /* Evita scrollbars indesejados na página inteira */
+}
 
-        /* Estilo para a carta fechada */
-        .closed-letter {
-            width: 80vw; /* Largura responsiva */
-            max-width: 300px; /* Largura máxima para telas maiores */
-            height: auto;
-            cursor: pointer;
-            position: relative;
-            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5)); /* Brilho dourado */
-            border-radius: 10px; /* Bordas arredondadas para a carta */
-        }
+.invitation-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('assets/fundo-universo.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    padding: 15px; /* Um pouco de espaço nas bordas */
+}
 
-        /* Estilo para o selo da carta */
-        .letter-seal {
-            position: absolute;
-            bottom: 10%; /* Posiciona na parte inferior da carta */
-            left: 50%; /* Centraliza horizontalmente no envelope */
-            transform: translate(-50%, 0); /* Ajuste para centralização perfeita */
-            width: 25%; /* Tamanho responsivo do selo */
-            max-width: 80px; /* Tamanho máximo do selo */
-            height: auto;
-            z-index: 10; /* Garante que o selo fique sobre a carta */
-        }
+#initial-screen {
+    text-align: center;
+    cursor: pointer;
+}
 
-        /* Animação de piscar para o botão "Toque para abrir" */
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+#closed-letter {
+    width: 150px;
+    max-width: 50%;
+    height: auto;
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s ease-out;
+}
 
-        /* Estilo para o botão "Toque para abrir" */
-        .tap-to-open-button {
-            background-color: #4a0080; /* Roxo escuro mágico */
-            color: #ffd700; /* Dourado */
-            padding: 1rem 2rem;
-            border-radius: 9999px; /* Bordas arredondadas */
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 2rem;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7); /* Sombra dourada */
-            animation: blink 1.5s infinite; /* Aplica a animação de piscar */
-            border: 2px solid #ffd700; /* Borda dourada */
-            transition: background-color 0.3s ease;
-        }
+#tap-to-open {
+    margin-top: 20px;
+    color: #FFD700;
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    animation: blink-animation 1.5s infinite;
+}
 
-        .tap-to-open-button:hover {
-            background-color: #6a00a0; /* Roxo mais claro ao passar o mouse */
-        }
+@keyframes blink-animation {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
 
-        /* Estilo para a carta aberta (inicialmente oculta) */
-        .open-letter-content {
-            background-image: url('assets/carta-aberta-fundo.png'); /* Imagem de fundo de pergaminho */
-            background-size: cover;
-            background-position: center;
-            padding: 5vw; /* Preenchimento responsivo */
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            max-width: 90vw; /* Largura máxima para telas menores */
-            width: 700px; /* Largura preferencial */
-            min-height: 80vh; /* Altura mínima para o conteúdo */
-            height: auto;
-            color: #4a2c0a; /* Cor do texto marrom escuro */
-            font-family: 'Playfair Display', serif; /* Fonte serifada clássica */
-            line-height: 1.6;
-            font-size: clamp(0.9rem, 2.5vw, 1.2rem); /* Tamanho de fonte responsivo */
-            opacity: 0; /* Inicialmente invisível */
-            transform: scale(0.8); /* Inicialmente menor */
-            transition: opacity 1s ease-in, transform 1s ease-in; /* Transição suave para aparecer */
-            text-align: center; /* Centraliza o texto */
-            position: relative;
-            overflow-y: auto; /* Adiciona rolagem se o conteúdo for muito longo */
-            display: flex; /* Usa flexbox para organizar o conteúdo */
-            flex-direction: column; /* Organiza os itens em coluna */
-            align-items: center; /* Centraliza os itens horizontalmente */
-        }
+#open-letter-screen {
+    width: 95%;
+    max-width: 450px;
+    height: 90vh;
+    max-height: 650px;
+    position: relative;
+    transform: scale(0.1) rotate(-15deg);
+    opacity: 0;
+    transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease-in;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        /* Estilo para o brasão no topo da carta aberta */
-        .open-letter-crest {
-            width: 15%; /* Tamanho responsivo do brasão */
-            max-width: 100px; /* Tamanho máximo do brasão */
-            height: auto;
-            margin-bottom: 1.5rem; /* Espaçamento abaixo do brasão */
-        }
+#open-letter-screen.visible {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+}
 
-        /* Estilo para o título do convite */
-        .invite-title {
-            font-size: clamp(1.8rem, 5vw, 3rem); /* Tamanho de fonte responsivo para o título */
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-            color: #8b4513; /* Marrom mais escuro */
-            text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.5); /* Sombra dourada para o título */
-        }
+.parchment {
+    width: 100%;
+    height: 100%;
+    background-image: url('assets/carta-aberta-fundo.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 25px 20px 20px 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        /* Estilo para o corpo do texto do convite */
-        .invite-text {
-            text-align: left; /* Alinha o texto à esquerda dentro do pergaminho */
-            width: 100%; /* Ocupa a largura total do contêiner */
-        }
+#parchment-crest {
+    width: 60px;
+    max-width: 20%;
+    height: auto;
+    margin-bottom: 10px;
+}
 
-        .invite-text p {
-            margin-bottom: 1rem;
-        }
+#letter-content {
+    width: 100%;
+    color: #5D4037;
+    font-size: clamp(11px, 2.8vw, 14px);
+    line-height: 1.45;
+    white-space: pre-wrap;
+    text-align: left;
+    overflow-y: hidden;
+    flex-grow: 1;
+}
 
-        /* Efeito de máquina de escrever */
-        .typewriter-text {
-            overflow: hidden; /* Garante que o texto não apareça todo de uma vez */
-            white-space: pre-wrap; /* Preserva quebras de linha e espaços */
-            margin: 0 auto;
-            letter-spacing: 0.05em; /* Espaçamento entre letras para o efeito */
-            animation: typing 0s steps(100, end) forwards; /* A animação é controlada por JS */
-            display: inline-block; /* Permite que o texto se ajuste ao conteúdo */
-        }
+/* Estilo específico para o nome LUNNA */
+.guest-name {
+    font-family: 'Cinzel Decorative', cursive;
+    color: #8B4513;
+    font-size: 1.6em;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    margin: 5px 0 10px 0;
+}
 
-        /* Cursor piscando para o efeito de máquina de escrever */
-        .typewriter-text::after {
-            content: '|';
-            display: inline-block;
-            animation: blink-caret 0.75s step-end infinite;
-        }
-
-        /* Animação do cursor piscando */
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: #4a2c0a; }
-        }
-
-        /* Estilo para os ícones mágicos */
-        .magic-icon {
-            display: inline-block;
-            margin-right: 5px; /* Espaçamento à direita do ícone */
-            font-size: 1.2em; /* Tamanho do ícone */
-            vertical-align: middle;
-        }
-
-        /* Estilo para o rodapé do convite */
-        .invite-footer {
-            margin-top: 2rem;
-            font-style: italic;
-            color: #8b4513;
-        }
+/* Media query para telas menores, se precisar de ajustes finos */
+@media (max-width: 380px) {
+    .parchment {
+        padding: 20px 15px 15px 15px;
+    }
+    #letter-content {
+        font-size: clamp(10px, 2.7vw, 13px);
+        line-height: 1.4;
+    }
+    #parchment-crest {
+        width: 50px;
+        margin-bottom: 8px;
+    }
+    .guest-name {
+        font-size: 1.5em;
+    }
+}

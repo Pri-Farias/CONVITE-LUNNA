@@ -3,42 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convite Mágico - Aniversário de Lunna</title>
+    <title>🦉 Convite Mágico - Aniversário da Lunna!</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="invite-container">
-        <!-- Tela inicial com a carta fechada -->
-        <div id="initialScreen" class="initial-screen">
-            <img id="closedLetter" src="assets/carta-fechada-selo.png" alt="Carta Fechada" class="closed-letter">
-            <!-- Selo de Hogwarts ou Ministério da Magia -->
-            <img src="assets/selo-magico.png" alt="Selo Mágico" class="letter-seal">
-            <button id="tapToOpenButton" class="tap-to-open-button">TOQUE PARA ABRIR</button>
+    <div class="invitation-container">
+        <div id="initial-screen">
+            <img id="closed-letter" src="assets/carta-fechada-selo.png" alt="Carta Fechada de Hogwarts">
+            <p id="tap-to-open">Toque para abrir</p>
         </div>
 
-        <!-- Conteúdo da carta aberta (inicialmente oculto) -->
-        <div id="openLetterContent" class="open-letter-content">
-            <!-- Brasão no topo da carta aberta -->
-            <img src="assets/brasao-hogwarts.png" alt="Brasão Mágico" class="open-letter-crest">
-            <h1 class="invite-title">Convite Mágico de Aniversário!</h1>
-            <div class="invite-text">
-                <p class="typewriter-text" id="inviteText"></p>
-            </div>
-            <div class="invite-footer">
-                Esperamos por você para celebrar a magia!
+        <div id="open-letter-screen" style="display:none;">
+            <div class="parchment">
+                <img id="parchment-crest" src="assets/brasao-hogwarts.png" alt="Brasão de Hogwarts"> <span class="code-annotation" data-annotation="Adicionado o brasão aqui"></span>
+                <div id="letter-content">
+                    <!-- O texto será inserido aqui pelo JavaScript -->
+                </div>
             </div>
         </div>
-
-        <!-- Elemento de áudio (inicialmente pausado) -->
-        <audio id="backgroundMusic" loop>
-            <!-- Substitua 'musica-magica.mp3' pelo caminho real do seu arquivo de áudio -->
-            <source src="assets/musica-magica.mp3" type="audio/mpeg">
-            Seu navegador não suporta o elemento de áudio.
-        </audio>
     </div>
 
-   
+    <audio id="bg-music" src="assets/musica-magica.mp3" loop></audio>
+
     <script src="script.js"></script>
 </body>
 </html>

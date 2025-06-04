@@ -1,80 +1,97 @@
- // Seleciona os elementos do DOM
-        const initialScreen = document.getElementById('initialScreen');
-        const closedLetter = document.getElementById('closedLetter');
-        const tapToOpenButton = document.getElementById('tapToOpenButton');
-        const openLetterContent = document.getElementById('openLetterContent');
-        const inviteTextElement = document.getElementById('inviteText');
-        const backgroundMusic = document.getElementById('backgroundMusic');
+document.addEventListener('DOMContentLoaded', () => {
+    const initialScreen = document.getElementById('initial-screen');
+    const closedLetter = document.getElementById('closed-letter');
+    const tapToOpenText = document.getElementById('tap-to-open');
+    const openLetterScreen = document.getElementById('open-letter-screen');
+    const letterContentElement = document.getElementById('letter-content');
+    const bgMusic = document.getElementById('bg-music');
 
-        // Texto completo do convite
-        const fullInviteText = `Prezado(a) bruxinho(a),
+    const invitationText = `Prezado(a) bruxinho(a),\n\nRecebemos informações ultra-secretas (vazadas por um elfo fofoqueiro) de que no dia 19 de junho, uma bruxinha poderosa chamada <span class="guest-name">LUNNA</span> vai completar mais um ciclo encantado! 🪄🎂\n\nE como manda a tradição da magia... vai ter: bolinho que desaparece, docinho que hipnotiza, sorrisos que brilham no escuro e amigos mágicos reunidos pra celebrar!\n\n📅 Data encantada: 19/06 (quarta-feira)\n⏰ Horário do feitiço: 18h, sem atraso ou vira sapo!\n📍 Local encantado: No Refúgio Secreto da Lunna\n\nMas calma, nada de dragões, vassouras desgovernadas ou aulas de poções! É só um bolinho mesmo, daqueles que somem rapidinho quando a gente diz "Aparecium Brigadeirus!" 🍰✨`;
 
-Recebemos informações ultra-secretas (vazadas por um elfo fofoqueiro) de que no dia 19 de junho, uma bruxinha poderosa chamada Lunna vai completar mais um ciclo encantado! 🪄🎂
+    let isLetterOpened = false;
 
-E como manda a tradição da magia... vai ter:
-✨ Bolinho que desaparece
-✨ Docinho que hipnotiza
-✨ Sorrisos que brilham no escuro
-✨ E amigos mágicos reunidos pra celebrar!
+    function typeWriter(element, text, speed, callback) {
+        let i = 0;
+        element.innerHTML = ''; // Limpa o conteúdo antes de começar
+        let currentHTML = '';
+        let inTag = false;
 
-📅 Data encantada: 19/06 (quarta-feira)
-⏰ Horário do feitiço: 18h, sem atraso ou vira sapo!
-📍 Lugar secreto (mas nem tanto): Rua 13 Polar, nº71 – Vila Velha
+        function type() {
+            if (i < text.length) {
+                const char = text.charAt(i);
+                if (char === '<') {
+                    inTag = true;
+                }
+                currentHTML += char;
+                if (char === '>') {
+                    inTag = false;
+                }
 
-Mas calma, nada de dragões, vassouras desgovernadas ou aulas de poções!
-É só um bolinho mesmo — daquele que some rapidinho quando a gente diz "Aparecium Brigadeirus!" 🍰✨
-`;
+                // Atualiza o innerHTML somente se não estiver no meio de uma tag
+                // ou se for o último caractere da tag
+                if (!inTag || (inTag && text.indexOf('>', i) === i) ) {
+                     // Para renderizar tags HTML corretamente durante a digitação
+                    let tempContainer = document.createElement('div');
+                    tempContainer.innerHTML = currentHTML + (inTag ? '' : '_'); // Adiciona cursor piscando
+                    element.innerHTML = tempContainer.innerHTML;
+                }
 
-        // Função para simular o efeito de máquina de escrever
-        let charIndex = 0;
-        function typeWriter() {
-            if (charIndex < fullInviteText.length) {
-                inviteTextElement.textContent += fullInviteText.charAt(charIndex);
-                charIndex++;
-                setTimeout(typeWriter, 35); // Ajuste a velocidade da digitação aqui (em milissegundos)
+
+                // Se não estiver dentro de uma tag, avance normalmente.
+                // Se estiver dentro de uma tag, pule para o final da tag para imprimi-la de uma vez.
+                if (inTag && text.indexOf('>', i) !== -1 && char !== '>') {
+                    // Não avançar o i aqui, ele será avançado naturalmente
+                }
+
+
+                i++;
+                element.scrollTop = element.scrollHeight; // Auto-scroll durante a digitação
+                setTimeout(type, speed);
+
             } else {
-                // Remove o cursor piscando após a digitação completa
-                inviteTextElement.classList.remove('typewriter-text');
+                // Remove o cursor ao final
+                element.innerHTML = currentHTML.replace(/_$/, '');
+                if (callback) {
+                    callback();
+                }
             }
         }
+        type();
+    }
 
-        // Função para abrir a carta
-        function openLetter() {
-            // Efeito de fade out e scale para a tela inicial
-            initialScreen.style.opacity = '0';
-            initialScreen.style.transform = 'scale(0.8)';
 
-            // Após a transição, esconde a tela inicial e mostra o conteúdo da carta aberta
+    function openTheLetter() {
+        if (isLetterOpened) return;
+        isLetterOpened = true;
+
+        closedLetter.style.transform = 'scale(0) rotate(360deg)';
+        closedLetter.style.opacity = '0';
+        tapToOpenText.style.opacity = '0';
+
+        bgMusic.play().catch(error => {
+            console.warn("Autoplay da música foi bloqueado pelo navegador:", error);
+        });
+        bgMusic.volume = 0.3;
+
+        setTimeout(() => {
+            initialScreen.style.display = 'none';
+            openLetterScreen.style.display = 'flex'; // Mudado de 'block' para 'flex'
+
+            requestAnimationFrame(() => {
+                openLetterScreen.classList.add('visible');
+            });
+
             setTimeout(() => {
-                initialScreen.style.display = 'none';
-                openLetterContent.style.display = 'flex'; // Altera para flex para centralizar o conteúdo
-                // Efeito de fade in e scale para a carta aberta
-                openLetterContent.style.opacity = '1';
-                openLetterContent.style.transform = 'scale(1)';
+                typeWriter(letterContentElement, invitationText, 35); // Velocidade um pouco menor
+            }, 700); // Atraso um pouco maior para garantir que a carta está visível
 
-                // Inicia a música de fundo
-                backgroundMusic.play().catch(e => console.error("Erro ao tocar a música:", e));
+        }, 500);
+    }
 
-                // Inicia o efeito de máquina de escrever
-                typeWriter();
-            }, 1000); // Tempo correspondente à duração da transição CSS
+    initialScreen.addEventListener('click', openTheLetter);
+    initialScreen.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            openTheLetter();
         }
-
-        // Adiciona o evento de clique à carta e ao botão
-        closedLetter.addEventListener('click', openLetter);
-        tapToOpenButton.addEventListener('click', openLetter);
-
-        // Garante que o conteúdo da carta aberta esteja oculto ao carregar
-        openLetterContent.style.display = 'none';
-
-        // Placeholder para as imagens:
-        // A imagem do selo (letter-seal), da carta fechada (closed-letter) e do brasão (open-letter-crest) são placeholders.
-        // Você deve substituí-las por imagens reais de Hogwarts ou Ministério da Magia.
-        // Exemplo:
-        // closedLetter.src = 'caminho/para/sua/carta-fechada.png';
-        // document.querySelector('.letter-seal').src = 'caminho/para/seu/selo.png';
-        // document.querySelector('.open-letter-crest').src = 'caminho/para/seu/brasao.png';
-
-        // A música de fundo também é um placeholder.
-        // Substitua 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
-        // pelo caminho real do seu arquivo 'musica-magica.mp3'.
+    });
+});
