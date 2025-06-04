@@ -5,26 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦉 Convite Mágico - Aniversário da Lunna!</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts (opcional, mas recomendado) -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="invitation-container">
+    <div class="universe-background">
+
         <div id="initial-screen">
-            <img id="closed-letter" src="assets/carta-fechada-selo.png" alt="Carta Fechada de Hogwarts">
-            <p id="tap-to-open">Toque para abrir</p>
+            <img id="closed-letter-img" src="assets/carta-fechada-selo.png" alt="Carta Fechada">
+            <p id="tap-to-open-text">Toque para Abrir</p>
         </div>
 
-        <div id="open-letter-screen" style="display:none;">
-            <div class="parchment">
-                <img id="parchment-crest" src="assets/brasao-hogwarts.png" alt="Brasão de Hogwarts"> <span class="code-annotation" data-annotation="Adicionado o brasão aqui"></span>
-                <div id="letter-content">
-                    <!-- O texto será inserido aqui pelo JavaScript -->
+        <div id="opened-letter-container" class="hidden">
+            <div class="parchment-bg">
+                <img class="crest-img" src="assets/brasao-hogwarts.png" alt="Brasão">
+                <div id="invitation-text-content">
+                    <!-- Texto será inserido pelo JS -->
                 </div>
             </div>
         </div>
+
     </div>
 
-    <audio id="bg-music" src="assets/musica-magica.mp3" loop></audio>
+    <audio id="magic-music" src="assets/musica-magica.mp3" loop></audio>
 
     <script src="script.js"></script>
 </body>

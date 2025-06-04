@@ -1,6 +1,4 @@
-/* Importações de fontes do Google Fonts (se não linkou no HTML) */
-/* @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Cinzel+Decorative:wght@400;700&display=swap'); */
-
+/* ===== RESET BÁSICO E ESTILOS GLOBAIS ===== */
 * {
     margin: 0;
     padding: 0;
@@ -10,164 +8,135 @@
 html, body {
     height: 100%;
     font-family: 'Merriweather', serif;
-    overflow: hidden; /* Evita scrollbars indesejados na página inteira */
+    color: #333; /* Cor de texto padrão */
 }
 
-.invitation-container {
+.hidden {
+    display: none !important; /* Para garantir que está escondido */
+}
+
+/* ===== FUNDO E CONTAINER PRINCIPAL ===== */
+.universe-background {
     width: 100%;
     height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background-image: url('assets/fundo-universo.png');
     background-size: cover;
     background-position: center;
-    position: relative;
-    padding: 10px; /* Um pouco de espaço nas bordas */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px; /* Espaçamento das bordas da tela */
+    overflow: hidden; /* Para evitar barras de rolagem no body */
 }
 
+/* ===== TELA INICIAL (CARTA FECHADA) ===== */
 #initial-screen {
     text-align: center;
     cursor: pointer;
-}
-
-#closed-letter {
-    width: 150px;
-    max-width: 50%;
-    height: auto;
-    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s ease-out;
-}
-
-#tap-to-open {
-    margin-top: 20px;
-    color: #FFD700;
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: 1.2em;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-    animation: blink-animation 1.5s infinite;
-}
-
-@keyframes blink-animation {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-}
-
-/* ... (código anterior não relevante para esta seção, como body, .invitation-container, etc.) ... */
-
-/* ... (código anterior não relevante para esta seção) ... */
-
-#open-letter-screen {
-    position: relative;
-    transform: scale(0.1) rotate(-15deg);
+    /* Animação de entrada (opcional) */
     opacity: 0;
-    transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease-in;
+    animation: fadeIn 1s forwards;
 }
 
-#open-letter-screen.visible {
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+#closed-letter-img {
+    width: 130px; /* Ajuste conforme sua imagem */
+    max-width: 40%;
+    height: auto;
+    margin-bottom: 15px;
+    transition: transform 0.5s ease-in-out, opacity 0.4s ease-out;
+}
+
+#tap-to-open-text {
+    color: #FFD700; /* Dourado */
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    animation: blink-soft 1.8s infinite;
+}
+
+@keyframes blink-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Efeito ao clicar na carta fechada (será adicionado via JS) */
+#initial-screen.closing #closed-letter-img {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+}
+#initial-screen.closing #tap-to-open-text {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+
+/* ===== CARTA ABERTA (CELULAR PRIMEIRO) ===== */
+#opened-letter-container {
+    width: 90%; /* Largura relativa à tela do celular */
+    max-width: 380px; /* Limite para celulares maiores não ficarem muito largos */
+    height: 88vh; /* Altura relativa à tela do celular */
+    /* max-height NÃO DEFINIDO AQUI, deixamos vh controlar */
+    background-color: transparent; /* Só para o container, o .parchment-bg terá a imagem */
+    position: relative; /* Se precisar posicionar algo absoluto dentro */
+
+    /* Animação de entrada da carta aberta */
+    transform: scale(0.5) rotate(-10deg);
+    opacity: 0;
+    /* A transição será acionada ao remover a classe .hidden e adicionar .visible (via JS) */
+}
+
+#opened-letter-container.visible {
     transform: scale(1) rotate(0deg);
     opacity: 1;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease-in;
 }
 
-.parchment {
+.parchment-bg {
+    width: 100%;
+    height: 100%;
     background-image: url('assets/carta-aberta-fundo.png');
-    background-size: 100% 100%;
+    background-size: 100% 100%; /* Estica para preencher. Cuidado com distorção. */
     background-repeat: no-repeat;
-    /* Padding: TOP AUMENTADO, LATERAIS, BOTTOM. */
-    border-radius: 5px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    overflow: hidden;
+    padding: 25px 25px 20px 25px; /* Topo, Laterais, Fundo */
+    border-radius: 8px; /* Suaviza as bordas do pergaminho */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    overflow: hidden; /* ESSENCIAL para não ter scroll no pergaminho */
+
     display: flex;
     flex-direction: column;
+    align-items: center; /* Centraliza o brasão horizontalmente */
 }
 
-#parchment-crest {
+.crest-img {
+    width: 55px; /* Tamanho do brasão para celular */
     height: auto;
-    margin: 0 auto 15px auto; /* Margem superior agora é controlada pelo padding do .parchment */
-    display: block;
+    margin-bottom: 12px; /* Espaço abaixo do brasão */
 }
 
-#letter-content {
+#invitation-text-content {
     width: 100%;
-    color: #5D4037;
-    /* Se o texto ainda não couber após aumentar altura, podemos reduzir um pouco aqui */
-    font-size: clamp(10.8px, 2.85vw, 13.8px); /* Leve ajuste, experimentar */
-    line-height: 1.42; /* Leve ajuste, experimentar */
-    white-space: pre-wrap;
+    flex-grow: 1; /* Faz o texto ocupar o espaço vertical restante */
+    overflow-y: auto; /* PARA TESTE INICIAL: DEIXE 'auto' para ver se precisa de scroll */
+                      /* DEPOIS MUDE PARA 'hidden' */
+    color: #4A3B31; /* Marrom escuro para o texto */
+    font-size: clamp(12px, 3.9vw, 15px); /* Fonte para celular */
+    line-height: 1.5; /* Entrelinhamento para celular */
+    white-space: pre-wrap; /* Mantém as quebras de linha do JS */
     text-align: left;
-    overflow-y: hidden;
-    flex-grow: 1;
+    /* Adiciona um pequeno padding interno se o padding do .parchment-bg não for suficiente */
+    /* padding: 0 5px; */
 }
 
-/* Estilo específico para o nome LUNNA */
-.guest-name {
+/* Estilo para o nome da aniversariante */
+#invitation-text-content .guest-name {
+    display: block; /* Para ocupar a linha e permitir centralização/margens */
     font-family: 'Cinzel Decorative', cursive;
-    color: #8B4513;
-    font-size: 1.6em; /* Manter ou ajustar se necessário */
-    font-weight: bold;
-    display: block;
+    font-size: 1.8em; /* Relativo ao font-size do #invitation-text-content */
+    color: #795548; /* Um tom de marrom mais forte */
     text-align: center;
-    margin: 8px 0 12px 0;
-}
-
-@media (max-width: 600px) {
-    #open-letter-screen {
-        width: 98%; /* Mais largo no celular */
-        max-width: 420px; /* Um limite para celulares maiores */
-        margin: 0 auto; /* Centralizar na tela */
-        padding: 16px;
-        height: 150vh; /* Usar bastante da altura da tela */
-        max-height: none; /* Sem limite máximo de altura explícito, deixa o vh controlar */
-    }
-
-    .parchment {
-        width: 100%;
-        height: 100%;
-         padding: 30px 20px 45px 20px;  /* Padding: Topo, Laterais AUMENTADAS, Fundo */
-    }
-
-    #parchment-crest {
-        width: 55px; /* Tamanho menor para celular */
-        margin-bottom: 12px; /* Espaço abaixo do brasão */
-    }
-
-    #letter-content {
-        font-size: clamp(11.5px, 3.8vw, 14.5px); /* Fonte um pouco maior e mais responsiva para celular */
-        line-height: 1.48; /* Aumentar um pouco para legibilidade e preenchimento */
-    }
-
-    .guest-name {
-        font-size: 1.7em; /* Maior no celular */
-        margin: 10px 0 15px 0; /* Mais espaçamento vertical */
-    }
-}
-
-/* === ESTILOS PARA TELAS MAIORES (TABLET/DESKTOP - acima de 600px) === */
-@media (min-width: 601px) {
-    #open-letter-screen {
-        width: 70%; /* Pode ser mais estreito em relação à tela */
-        max-width: 500px; /* Limite de largura para não ficar gigante */
-        height: 85vh; /* Um pouco menos de altura relativa */
-        max-height: 750px; /* Limite de altura */
-    }
-
-    .parchment {
-        width: 100%;
-        height: 100%;
-        padding: 75px 45px 100px 45px; /* Padding: Topo MAIOR, Laterais MAIORES, Fundo MAIOR */
-    }
-
-    #parchment-crest {
-        width: 70px; /* Maior em telas grandes */
-        margin-bottom: 20px;
-    }
-
-    #letter-content {
-        font-size: clamp(14px, 2.2vw, 17px); /* Fonte base maior, vw menor impacto */
-        line-height: 1.55;
-    }
-
-    .guest-name {
-        font-size: 2em; /* Nome bem destacado */
-        margin: 15px 0 20px 0;
-    }
+    margin: 8px 0 12px 0; /* Espaçamento vertical */
 }

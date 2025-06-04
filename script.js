@@ -1,97 +1,68 @@
 document.addEventListener('DOMContentLoaded', () => {
     const initialScreen = document.getElementById('initial-screen');
-    const closedLetter = document.getElementById('closed-letter');
-    const tapToOpenText = document.getElementById('tap-to-open');
-    const openLetterScreen = document.getElementById('open-letter-screen');
-    const letterContentElement = document.getElementById('letter-content');
-    const bgMusic = document.getElementById('bg-music');
+    const closedLetterImg = document.getElementById('closed-letter-img');
+    // const tapToOpenText = document.getElementById('tap-to-open-text'); // Já temos initialScreen
 
-    const invitationText = `Prezado(a) bruxinho(a),\n\nRecebemos informações ultra-secretas (vazadas por um elfo fofoqueiro) de que no dia 19 de junho, uma bruxinha poderosa chamada <span class="guest-name">LUNNA</span> vai completar mais um ciclo encantado! 🪄🎂\n\nE como manda a tradição da magia... vai ter: bolinho que desaparece, docinho que hipnotiza, sorrisos que brilham no escuro e amigos mágicos reunidos pra celebrar!\n\n📅 Data encantada: 19/06 (quarta-feira)\n⏰ Horário do feitiço: 18h, sem atraso ou vira sapo!\n📍 Local encantado: No Refúgio Secreto da Lunna\n\nMas calma, nada de dragões, vassouras desgovernadas ou aulas de poções! É só um bolinho mesmo, daqueles que somem rapidinho quando a gente diz "Aparecium Brigadeirus!" 🍰✨`;
+    const openedLetterContainer = document.getElementById('opened-letter-container');
+    const invitationTextElement = document.getElementById('invitation-text-content');
+    const magicMusic = document.getElementById('magic-music');
+
+    const invitationText = `Prezado(a) bruxinho(a),\n\nRecebemos informações ultra-secretas (vazadas por um elfo fofoqueiro) de que no dia 19 de junho, uma bruxinha poderosa chamada\n<span class="guest-name">LUNNA</span>\nvai completar mais um ciclo encantado! 🪄🎂\n\nE como manda a tradição da magia... vai ter:\n\n✨ Bolinho que desaparece\n✨ Docinho que hipnotiza\n✨ Sorrisos que brilham no escuro\n✨ E amigos mágicos reunidos pra celebrar!\n\n📅 Data encantada: 19/06 (quarta-feira)\n⏰ Horário do feitiço: 18h, sem atraso ou vira sapo!\n📍 Lugar secreto (mas nem tanto):\nRua 13 Polar, nº71 – Vila Velha\n\nMas calma, nada de dragões, vassouras desgovernadas ou aulas de poções!\n\nÉ só um bolinho mesmo — daquele que some rapidinho quando a gente diz "Aparecium Brigadeirus!" 🍰✨`;
 
     let isLetterOpened = false;
+    let charIndex = 0;
 
-    function typeWriter(element, text, speed, callback) {
-        let i = 0;
-        element.innerHTML = ''; // Limpa o conteúdo antes de começar
-        let currentHTML = '';
-        let inTag = false;
-
-        function type() {
-            if (i < text.length) {
-                const char = text.charAt(i);
-                if (char === '<') {
-                    inTag = true;
+    function typeWriterEffect() {
+        if (charIndex < invitationText.length) {
+            let currentChar = invitationText.substring(charIndex, charIndex + 1);
+            // Lidar com tags HTML para não digitá-las caractere por caractere visivelmente
+            if (currentChar === '<') {
+                let closingTagIndex = invitationText.indexOf('>', charIndex);
+                if (closingTagIndex !== -1) {
+                    invitationTextElement.innerHTML += invitationText.substring(charIndex, closingTagIndex + 1);
+                    charIndex = closingTagIndex;
                 }
-                currentHTML += char;
-                if (char === '>') {
-                    inTag = false;
-                }
-
-                // Atualiza o innerHTML somente se não estiver no meio de uma tag
-                // ou se for o último caractere da tag
-                if (!inTag || (inTag && text.indexOf('>', i) === i) ) {
-                     // Para renderizar tags HTML corretamente durante a digitação
-                    let tempContainer = document.createElement('div');
-                    tempContainer.innerHTML = currentHTML + (inTag ? '' : '_'); // Adiciona cursor piscando
-                    element.innerHTML = tempContainer.innerHTML;
-                }
-
-
-                // Se não estiver dentro de uma tag, avance normalmente.
-                // Se estiver dentro de uma tag, pule para o final da tag para imprimi-la de uma vez.
-                if (inTag && text.indexOf('>', i) !== -1 && char !== '>') {
-                    // Não avançar o i aqui, ele será avançado naturalmente
-                }
-
-
-                i++;
-                element.scrollTop = element.scrollHeight; // Auto-scroll durante a digitação
-                setTimeout(type, speed);
-
             } else {
-                // Remove o cursor ao final
-                element.innerHTML = currentHTML.replace(/_$/, '');
-                if (callback) {
-                    callback();
-                }
+                invitationTextElement.innerHTML += currentChar;
             }
+            charIndex++;
+            invitationTextElement.scrollTop = invitationTextElement.scrollHeight; // Auto-scroll
+            setTimeout(typeWriterEffect, 35); // Velocidade da digitação
         }
-        type();
     }
 
-
-    function openTheLetter() {
+    function openLetter() {
         if (isLetterOpened) return;
         isLetterOpened = true;
 
-        closedLetter.style.transform = 'scale(0) rotate(360deg)';
-        closedLetter.style.opacity = '0';
-        tapToOpenText.style.opacity = '0';
+        // Animação de fechar a carta inicial
+        initialScreen.classList.add('closing');
 
-        bgMusic.play().catch(error => {
-            console.warn("Autoplay da música foi bloqueado pelo navegador:", error);
-        });
-        bgMusic.volume = 0.3;
+        // Tocar música
+        magicMusic.volume = 0.25; // Volume suave
+        magicMusic.play().catch(error => console.warn("Autoplay da música bloqueado:", error));
 
         setTimeout(() => {
-            initialScreen.style.display = 'none';
-            openLetterScreen.style.display = 'flex'; // Mudado de 'block' para 'flex'
-
+            initialScreen.classList.add('hidden'); // Esconde a tela inicial
+            openedLetterContainer.classList.remove('hidden'); // Mostra o container da carta aberta
+            // Força reflow para a animação de entrada funcionar
             requestAnimationFrame(() => {
-                openLetterScreen.classList.add('visible');
+                 openedLetterContainer.classList.add('visible');
             });
 
-            setTimeout(() => {
-                typeWriter(letterContentElement, invitationText, 35); // Velocidade um pouco menor
-            }, 700); // Atraso um pouco maior para garantir que a carta está visível
 
-        }, 500);
+            // Iniciar efeito de máquina de escrever
+            invitationTextElement.innerHTML = ''; // Limpa antes de começar
+            charIndex = 0; // Reseta o índice para o typewriter
+            setTimeout(typeWriterEffect, 500); // Pequeno delay para a carta "assentar"
+
+        }, 500); // Tempo deve ser igual ou um pouco maior que a transição de #closed-letter-img
     }
 
-    initialScreen.addEventListener('click', openTheLetter);
+    initialScreen.addEventListener('click', openLetter);
     initialScreen.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            openTheLetter();
+            openLetter();
         }
     });
 });
